@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import { FiPlus, FiEdit2, FiTrash2, FiChevronLeft } from 'react-icons/fi';
-import api from '../api/apiClient';
+import api from '../../api/apiClient';
 
 const AdminRooms = () => {
     const { user, isAuthenticated } = useContext(AuthContext);

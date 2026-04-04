@@ -2,19 +2,7 @@ import React, { useState } from 'react';
 import api from '../api/apiClient';
 import { FiCreditCard, FiCheckCircle, FiX } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-
-interface BookingData {
-    id: number;
-    total_price: number | string;
-    payment_type?: string;
-    deposit_percentage?: number;
-}
-
-interface PaymentModalProps {
-    booking: BookingData;
-    onClose: () => void;
-    onSuccess: () => void;
-}
+import type { PaymentModalProps } from '../types';
 
 const PaymentModal: React.FC<PaymentModalProps> = ({ booking, onClose, onSuccess }) => {
     const [loading, setLoading] = useState(false);

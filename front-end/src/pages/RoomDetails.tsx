@@ -8,26 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { eachDayOfInterval, addDays } from 'date-fns';
 import api from '../api/apiClient';
 import PaymentModal from '../components/PaymentModal';
-
-interface RoomData {
-    id: number;
-    name: string;
-    description: string;
-    price: string | number;
-    images?: Array<{ url: string }>;
-}
-
-interface Booking {
-    id: number;
-    check_in: string;
-    check_out: string;
-}
-
-interface Holiday {
-    id: number;
-    holiday_date: string;
-    description: string;
-}
+import type { RoomData, Booking, Holiday } from '../types';
 
 const RoomDetails = () => {
     const { id } = useParams();

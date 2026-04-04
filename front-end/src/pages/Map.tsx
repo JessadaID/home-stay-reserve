@@ -2,26 +2,7 @@ import { useEffect, useState } from 'react';
 import { FiInfo } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/apiClient';
-
-interface Marker {
-    id: number;
-    room_id: number;
-    x_coordinate: number;
-    y_coordinate: number;
-}
-
-interface MapData {
-    id: number;
-    image_url: string;
-    markers: Marker[];
-}
-
-interface RoomData {
-    id: number;
-    name: string;
-    description: string;
-    price: string | number;
-}
+import type { MapData, RoomData } from '../types';
 
 const Map = () => {
     const [mapData, setMapData] = useState<MapData | null>(null);

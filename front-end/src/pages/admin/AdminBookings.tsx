@@ -1,21 +1,9 @@
 import { useEffect, useState, useContext } from 'react';
 import { FiEdit2, FiTrash2, FiSave, FiX, FiCheckCircle, FiClock, FiCreditCard } from 'react-icons/fi';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/apiClient';
-
-interface Booking {
-    id: number;
-    room_id: number;
-    customer_name: string;
-    room_name: string;
-    check_in: string;
-    check_out: string;
-    total_price: number;
-    payment_type: string;
-    payment_status: string;
-    created_at: string;
-}
+import api from '../../api/apiClient';
+import type { Booking } from '../../types';
 
 const AdminBookings = () => {
     const { user, isAuthenticated } = useContext(AuthContext);
@@ -47,7 +35,7 @@ const AdminBookings = () => {
 
     const handleEdit = (booking: Booking) => {
         setEditingId(booking.id);
-        setEditStatus(booking.payment_status);
+        setEditStatus(booking.payment_status || '');
     };
 
     const handleSave = async (id: number) => {
@@ -136,7 +124,7 @@ const AdminBookings = () => {
                                                             <option value="paid">ชำระครบแล้ว</option>
                                                         </select>
                                                     ) : (
-                                                        getStatusWidget(booking.payment_status)
+                                                        getStatusWidget(booking.payment_status || '')
                                                     )}
                                                 </td>
                                                 <td className="p-4 text-right">
@@ -156,8 +144,8 @@ const AdminBookings = () => {
                                                                     onClick={() => handleEdit(booking)}
                                                                     disabled={isLocked}
                                                                     className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isLocked
-                                                                            ? 'bg-stone-100 text-stone-300 cursor-not-allowed'
-                                                                            : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                                                                        ? 'bg-stone-100 text-stone-300 cursor-not-allowed'
+                                                                        : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
                                                                         }`}
                                                                     title={isLocked ? "ไม่สามารถแก้ไขการจองที่จ่ายเต็มจำนวนแล้ว" : "แก้ไขการชำระเงิน"}
                                                                 >

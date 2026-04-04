@@ -1,21 +1,9 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import { FiChevronLeft, FiPlus, FiTrash2, FiMapPin, FiSave } from 'react-icons/fi';
-import api from '../api/apiClient';
-
-interface Marker {
-    id: number;
-    room_id: number;
-    x_coordinate: number;
-    y_coordinate: number;
-}
-
-interface MapData {
-    id: number;
-    image_url: string;
-    markers: Marker[];
-}
+import api from '../../api/apiClient';
+import type { MapData } from '../../types';
 
 const AdminMap = () => {
     const { user, isAuthenticated } = useContext(AuthContext);
