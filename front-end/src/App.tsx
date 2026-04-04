@@ -8,13 +8,13 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import MyBookings from './pages/MyBookings';
 import Notfound from './pages/Notfound';
-import AdminLogin from './pages/AdminLogin';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminRooms from './pages/AdminRooms';
-import AdminRoomForm from './pages/AdminRoomForm';
-import AdminMap from './pages/AdminMap';
-import AdminHolidays from './pages/AdminHolidays';
-import AdminBookings from './pages/AdminBookings';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminRooms from './pages/admin/AdminRooms';
+import AdminRoomForm from './pages/admin/AdminRoomForm';
+import AdminMap from './pages/admin/AdminMap';
+import AdminHolidays from './pages/admin/AdminHolidays';
+import AdminBookings from './pages/admin/AdminBookings';
 import { AuthProvider } from './context/AuthContext';
 
 function App() {

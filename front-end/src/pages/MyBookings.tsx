@@ -4,22 +4,7 @@ import { FiCalendar, FiClock, FiHome, FiTrash2, FiAlertCircle, FiCreditCard } fr
 import api from '../api/apiClient';
 import { AuthContext } from '../context/AuthContext';
 import PaymentModal from '../components/PaymentModal';
-
-interface Booking {
-    id: number;
-    room_id: number;
-    room_name: string;
-    check_in: string;
-    check_out: string;
-    customer_name: string;
-    price: number;
-    total_price?: number;
-    payment_type?: string;
-    payment_status?: string;
-    deposit_percentage?: number;
-    created_at?: string;
-    room_image?: string;
-}
+import type { Booking } from '../types';
 
 const MyBookings = () => {
     const { isAuthenticated } = useContext(AuthContext);
@@ -248,7 +233,7 @@ const MyBookings = () => {
                 <PaymentModal
                     booking={{
                         id: paymentModalBooking.id,
-                        total_price: paymentModalBooking.total_price || (calculateDays(paymentModalBooking.check_in, paymentModalBooking.check_out) * paymentModalBooking.price),
+                        total_price: paymentModalBooking.total_price || (calculateDays(paymentModalBooking.check_in, paymentModalBooking.check_out) * (paymentModalBooking.price || 0)),
                         payment_type: paymentModalBooking.payment_type,
                         deposit_percentage: paymentModalBooking.deposit_percentage || 50 // Default fallback
                     }}

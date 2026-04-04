@@ -2,16 +2,7 @@ import { useEffect, useState } from 'react';
 import { FiUsers, FiMaximize2 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import api from '../api/apiClient';
-
-interface Room {
-    id: number;
-    name: string;
-    description: string;
-    price: string | number;
-    capacity?: number;
-    size?: number;
-    images?: Array<{ url: string }>;
-}
+import type { Room } from '../types';
 
 const Rooms = () => {
     const [rooms, setRooms] = useState<Room[]>([]);

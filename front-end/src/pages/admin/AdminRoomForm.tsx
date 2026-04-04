@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import { FiChevronLeft, FiTrash2, FiUploadCloud } from 'react-icons/fi';
-import api from '../api/apiClient';
+import api from '../../api/apiClient';
 
 const AdminRoomForm = () => {
     const { user, isAuthenticated } = useContext(AuthContext);

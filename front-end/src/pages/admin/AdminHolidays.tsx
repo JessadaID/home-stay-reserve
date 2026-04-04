@@ -1,14 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import { FiChevronLeft, FiPlus, FiTrash2, FiCalendar } from 'react-icons/fi';
-import api from '../api/apiClient';
-
-interface Holiday {
-    id: number;
-    holiday_date: string;
-    description: string;
-}
+import api from '../../api/apiClient';
+import type { Holiday } from '../../types';
 
 const AdminHolidays = () => {
     const { user, isAuthenticated } = useContext(AuthContext);
