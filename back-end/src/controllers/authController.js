@@ -53,7 +53,7 @@ exports.loginAdmin = async (req, res) => {
         // Record login
         await db.query('INSERT INTO "Login" (admin_id, login_time) VALUES ($1, $2)', [admin.id, new Date().toISOString()]);
 
-        const payload = { userId: admin.id, role: 'admin' };
+        const payload = { userId: admin.id, id: admin.id, username: admin.username, email: admin.email, role: 'admin' };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
 
         res.json({ token, user: { id: admin.id, username: admin.username, email: admin.email, role: 'admin' } });
@@ -114,7 +114,7 @@ exports.loginCustomer = async (req, res) => {
         // Record login
         await db.query('INSERT INTO "Login" (customer_id, login_time) VALUES ($1, $2)', [customer.id, new Date().toISOString()]);
 
-        const payload = { userId: customer.id, role: 'customer' };
+        const payload = { userId: customer.id, id: customer.id, username: customer.username, email: customer.email, role: 'customer' };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
 
         res.json({ token, user: { id: customer.id, username: customer.username, email: customer.email, role: 'customer' } });
