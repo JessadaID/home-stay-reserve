@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import { FiChevronLeft, FiTrash2, FiUploadCloud } from 'react-icons/fi';
+import { FiChevronLeft, FiTrash2 } from 'react-icons/fi';
 import api from '../../api/apiClient';
 
 const AdminRoomForm = () => {
@@ -20,9 +20,9 @@ const AdminRoomForm = () => {
     });
 
     // For managing images
-    const [images, setImages] = useState<any[]>([]);
-    const [newImageUrl, setNewImageUrl] = useState('');
-    const [newImageDesc, setNewImageDesc] = useState('');
+    const [images, setImages] = useState<any[]>([]); // สำหรับรูปเดิมที่มีอยู่แล้ว
+    const [imageFiles, setImageFiles] = useState<File[]>([]); // สำหรับไฟล์รูปใหม่ที่จะอัปโหลด
+
 
     const [loading, setLoading] = useState(isEditMode);
     const [saving, setSaving] = useState(false);
@@ -37,7 +37,7 @@ const AdminRoomForm = () => {
         if (isEditMode) {
             const fetchRoomDetails = async () => {
                 try {
-                    const res = await api.get(`/rooms/${id}`);
+                    const res = await api.get(`api/rooms/${id}`);
                     setFormData({
                         name: res.data.name,
                         description: res.data.description || '',
@@ -56,7 +56,7 @@ const AdminRoomForm = () => {
             };
             fetchRoomDetails();
         } else {
-            setLoading(false); // Make sure it stops loading if not edit mode
+            setLoading(false);
         }
     }, [isAuthenticated, user, navigate, id, isEditMode]);
 
@@ -66,23 +66,36 @@ const AdminRoomForm = () => {
         setError('');
 
         try {
-            const payload = {
-                name: formData.name,
-                description: formData.description,
-                price: formData.price,
-                capacity: formData.capacity ? Number(formData.capacity) : undefined,
-                size: formData.size ? Number(formData.size) : undefined,
-                amenities: formData.amenities.split(',').map(a => a.trim()).filter(a => a)
-            };
+            const formDataToSend = new FormData();
+            formDataToSend.append('name', formData.name);
+            if (formData.description) formDataToSend.append('description', formData.description);
+            formDataToSend.append('price', formData.price);
+            if (formData.capacity) formDataToSend.append('capacity', formData.capacity);
+            if (formData.size) formDataToSend.append('size', formData.size);
+
+            const amenitiesArray = formData.amenities.split(',').map(a => a.trim()).filter(a => a);
+            formDataToSend.append('amenities', JSON.stringify(amenitiesArray));
+
+            imageFiles.forEach(file => {
+                formDataToSend.append('images', file);
+            });
 
             if (isEditMode) {
-                await api.put(`/rooms/${id}`, payload);
+                formDataToSend.append('existingImages', JSON.stringify(images));
+            }
+
+            if (isEditMode) {
+                await api.put(`api/rooms/${id}`, formDataToSend, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
                 alert('อัปเดตห้องพักเรียบร้อย');
+                navigate(`/admin/rooms`);
             } else {
-                const res = await api.post(`/rooms`, payload);
-                alert('เพิ่มห้องพักเรียบร้อย ระบบจะนำท่านไปเชื่อมโยงรูปภาพ');
-                // Redirect to edit mode so they can add images
-                navigate(`/admin/rooms/${res.data.id}/edit`);
+                await api.post(`api/rooms`, formDataToSend, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+                alert('เพิ่มห้องพักเรียบร้อย');
+                navigate('/admin/rooms');
                 return;
             }
         } catch (err: any) {
@@ -92,31 +105,16 @@ const AdminRoomForm = () => {
         }
     };
 
-    const handleAddImage = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newImageUrl.trim()) return;
-
-        try {
-            const res = await api.post(`/rooms/${id}/images`, {
-                url: newImageUrl,
-                description: newImageDesc
-            });
-            setImages([...images, res.data]);
-            setNewImageUrl('');
-            setNewImageDesc('');
-        } catch (err: any) {
-            alert(err.response?.data?.message || 'เพิ่มแผนที่/รูปภาพล้มเหลว');
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setImageFiles(Array.from(e.target.files));
         }
     };
 
-    const handleDeleteImage = async (imageId: number) => {
+
+    const handleDeleteImage = (index: number) => {
         if (!window.confirm('ยืนยันการลบรูปภาพนี้?')) return;
-        try {
-            await api.delete(`/rooms/images/${imageId}`);
-            setImages(images.filter(img => img.id !== imageId));
-        } catch (err: any) {
-            alert('ลบรูปภาพล้มเหลว');
-        }
+        setImages(images.filter((_, i) => i !== index));
     };
 
     if (loading) return null;
@@ -235,70 +233,56 @@ const AdminRoomForm = () => {
 
                     {/* Images Column */}
                     <div className="lg:col-span-1 space-y-8">
-                        {!isEditMode ? (
-                            <div className="bg-white rounded-3xl shadow-sm border border-stone-200 p-8 text-center text-stone-500 flex flex-col items-center justify-center min-h-[300px]">
-                                <FiUploadCloud size={48} className="text-stone-300 mb-4" />
-                                <p>กรุณาบันทึกข้อมูลห้องพักก่อน<br />เพื่อเพิ่มรูปภาพ</p>
+                        <div className="bg-white rounded-3xl shadow-sm border border-stone-200 p-6">
+                            <h2 className="text-lg font-bold text-stone-800 mb-4">{isEditMode ? 'อัปโหลดรูปภาพใหม่ (จะเขียนทับรูปเดิมทั้งหมด)' : 'เพิ่มรูปภาพใหม่'}</h2>
+                            <div className="space-y-4">
+                                <div>
+                                    <input
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                        className="w-full px-3 py-2 text-sm rounded-lg border border-stone-300 focus:ring-2 focus:ring-emerald-500 outline-none"
+                                    />
+                                </div>
+                                {imageFiles.length > 0 && (
+                                    <div className="text-sm text-stone-600">
+                                        <p className="font-semibold mb-1">ไฟล์ที่เลือก: {imageFiles.length} ไฟล์</p>
+                                        <ul className="list-disc pl-5">
+                                            {imageFiles.map((f, i) => (
+                                                <li key={i}>{f.name}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
-                        ) : (
-                            <>
-                                <div className="bg-white rounded-3xl shadow-sm border border-stone-200 p-6">
-                                    <h2 className="text-lg font-bold text-stone-800 mb-4">เพิ่มรูปภาพใหม่</h2>
-                                    <form onSubmit={handleAddImage} className="space-y-4">
-                                        <div>
-                                            <input
-                                                type="url"
-                                                required
-                                                value={newImageUrl}
-                                                onChange={(e) => setNewImageUrl(e.target.value)}
-                                                className="w-full px-3 py-2 text-sm rounded-lg border border-stone-300 focus:ring-2 focus:ring-emerald-500 outline-none"
-                                                placeholder="URL รูปภาพ (เช่น https://...)"
-                                            />
-                                        </div>
-                                        <div>
-                                            <input
-                                                type="text"
-                                                value={newImageDesc}
-                                                onChange={(e) => setNewImageDesc(e.target.value)}
-                                                className="w-full px-3 py-2 text-sm rounded-lg border border-stone-300 focus:ring-2 focus:ring-emerald-500 outline-none"
-                                                placeholder="คำอธิบายสั้นๆ (ตัวเลือก)"
-                                            />
+                        </div>
+
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-bold text-stone-800">แกลลอรี่ ({images.length})</h2>
+                            {images.length === 0 ? (
+                                <div className="p-6 bg-stone-100 rounded-2xl text-center text-stone-500 text-sm">
+                                    ยังไม่มีรูปภาพ
+                                </div>
+                            ) : (
+                                images.map((url, index) => (
+                                    <div key={index} className="relative group rounded-2xl overflow-hidden border border-stone-200 shadow-sm">
+                                        <img src={url.startsWith('/') ? `http://localhost:3000${url}` : url} alt={`Room image ${index + 1}`} className="w-full h-40 object-cover" />
+                                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-8">
+                                            <p className="text-white text-xs truncate drop-shadow-md">รูปที่ {index + 1}</p>
                                         </div>
                                         <button
-                                            type="submit"
-                                            className="w-full py-2 bg-stone-800 text-white font-medium rounded-lg hover:bg-stone-700 transition-colors"
+                                            type="button"
+                                            onClick={() => handleDeleteImage(index)}
+                                            className="absolute top-2 right-2 p-2 bg-rose-600 text-white rounded-lg opacity-0 group-hover:opacity-100 hover:bg-rose-500 transition-all shadow-md"
+                                            title="ลบรูปภาพนี้"
                                         >
-                                            เพิ่มรูปภาพ
+                                            <FiTrash2 size={16} />
                                         </button>
-                                    </form>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <h2 className="text-lg font-bold text-stone-800">แกลลอรี่ ({images.length})</h2>
-                                    {images.length === 0 ? (
-                                        <div className="p-6 bg-stone-100 rounded-2xl text-center text-stone-500 text-sm">
-                                            ยังไม่มีรูปภาพ
-                                        </div>
-                                    ) : (
-                                        images.map((img) => (
-                                            <div key={img.id} className="relative group rounded-2xl overflow-hidden border border-stone-200 shadow-sm">
-                                                <img src={img.url} alt={img.description} className="w-full h-40 object-cover" />
-                                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-8">
-                                                    <p className="text-white text-xs truncate drop-shadow-md">{img.description || 'ไม่มีคำอธิบาย'}</p>
-                                                </div>
-                                                <button
-                                                    onClick={() => handleDeleteImage(img.id)}
-                                                    className="absolute top-2 right-2 p-2 bg-rose-600 text-white rounded-lg opacity-0 group-hover:opacity-100 hover:bg-rose-500 transition-all shadow-md"
-                                                    title="ลบรูปภาพนี้"
-                                                >
-                                                    <FiTrash2 size={16} />
-                                                </button>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            </>
-                        )}
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

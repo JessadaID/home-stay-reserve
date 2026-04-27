@@ -10,6 +10,7 @@ const AdminRooms = () => {
     const [rooms, setRooms] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
+
     useEffect(() => {
         if (!isAuthenticated || user?.role !== 'admin') {
             navigate('/admin/login');
@@ -19,7 +20,7 @@ const AdminRooms = () => {
         const fetchRooms = async () => {
             setLoading(true);
             try {
-                const res = await api.get('/rooms');
+                const res = await api.get('api/rooms');
                 setRooms(res.data);
             } catch (error) {
                 console.error("Error fetching rooms", error);
@@ -37,7 +38,7 @@ const AdminRooms = () => {
         }
 
         try {
-            await api.delete(`/rooms/${roomId}`);
+            await api.delete(`api/rooms/${roomId}`);
             setRooms(rooms.filter(r => r.id !== roomId));
             alert('ลบห้องพักเรียบร้อยแล้ว');
         } catch (error: any) {
@@ -86,7 +87,7 @@ const AdminRooms = () => {
                                 <div key={room.id} className="bg-white rounded-3xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
                                     <div className="h-48 bg-stone-200 relative">
                                         {room.images && room.images.length > 0 ? (
-                                            <img src={room.images[0].url} alt={room.name} className="w-full h-full object-cover" />
+                                            <img src={`${import.meta.env.VITE_API_URL}${room.images[0]}`} alt={room.name} className="w-full h-full object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-stone-400">
                                                 ไม่มีรูปภาพ
