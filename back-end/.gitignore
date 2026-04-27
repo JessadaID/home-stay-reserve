@@ -2,3 +2,4 @@ node_modules
 homestay.db
 .env
 seed.js
+uploads

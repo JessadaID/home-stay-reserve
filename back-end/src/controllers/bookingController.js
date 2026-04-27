@@ -108,7 +108,11 @@ exports.getMyBookings = async (req, res) => {
             SELECT b.*, 
                    r.name as room_name, 
                    r.price,
-                   (SELECT url FROM "Image" WHERE room_id = r.id LIMIT 1) as room_image
+                   (CASE 
+                       WHEN r.images IS NOT NULL AND r.images != '' 
+                       THEN (JSON_EXTRACT_PATH_TEXT(r.images::json, '0'))
+                       ELSE NULL 
+                    END) as room_image
             FROM "Booking" b
             JOIN "Room" r ON b.room_id = r.id
             WHERE b.customer_id = $1

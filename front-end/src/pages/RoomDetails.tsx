@@ -189,18 +189,18 @@ const RoomDetails = () => {
                     {room.images && room.images.length > 0 ? (
                         <>
                             <div className="md:col-span-3 row-span-2 relative group overflow-hidden">
-                                <img src={room.images[0].url} alt="Main view" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                <img src={room.images[0]} alt="Main view" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                             </div>
                             <div className="hidden md:block overflow-hidden relative group bg-stone-300">
                                 {room.images[1] ? (
-                                    <img src={room.images[1].url} alt="Side view 1" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    <img src={room.images[1]} alt="Side view 1" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-stone-400">ไม่มีรูปภาพเพิ่มเติม</div>
                                 )}
                             </div>
                             <div className="hidden md:block overflow-hidden relative group bg-stone-300">
                                 {room.images[2] ? (
-                                    <img src={room.images[2].url} alt="Side view 2" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    <img src={room.images[2]} alt="Side view 2" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-stone-400">ไม่มีรูปภาพเพิ่มเติม</div>
                                 )}

@@ -13,7 +13,7 @@ export interface RoomData {
     capacity?: number;
     size?: number;
     amenities?: string[];
-    images?: Array<{ url: string }>;
+    images?: string[];
 }
 
 export interface Room {
@@ -24,7 +24,7 @@ export interface Room {
     capacity?: number;
     size?: number;
     amenities?: string[];
-    images?: Array<{ url: string }>;
+    images?: string[];
 }
 
 export interface Booking {

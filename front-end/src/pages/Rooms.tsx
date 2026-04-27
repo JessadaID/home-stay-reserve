@@ -47,7 +47,7 @@ const Rooms = () => {
                             <div className="relative h-60 overflow-hidden bg-stone-200">
                                 {room.images && room.images.length > 0 ? (
                                     <img
-                                        src={room.images[0].url}
+                                        src={room.images[0]}
                                         alt={room.name}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />

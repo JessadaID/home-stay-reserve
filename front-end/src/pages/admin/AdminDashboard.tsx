@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import { FiUsers, FiCalendar, FiDollarSign, FiMap, FiGrid, FiList } from 'react-icons/fi';
+import { FiUsers, FiCalendar, FiDollarSign, FiGrid, FiList } from 'react-icons/fi';
 import api from '../../api/apiClient';
 
 const AdminDashboard = () => {
