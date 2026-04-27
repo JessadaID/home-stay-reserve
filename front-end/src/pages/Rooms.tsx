@@ -7,11 +7,11 @@ import type { Room } from '../types';
 const Rooms = () => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [loading, setLoading] = useState(true);
-
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const response = await api.get('/rooms');
+                const response = await api.get(`${API_URL}/api/rooms`);
                 setRooms(response.data);
             } catch (error) {
                 console.error("Error fetching rooms:", error);
@@ -47,7 +47,7 @@ const Rooms = () => {
                             <div className="relative h-60 overflow-hidden bg-stone-200">
                                 {room.images && room.images.length > 0 ? (
                                     <img
-                                        src={room.images[0]}
+                                        src={`${API_URL}${room.images[0]}`}
                                         alt={room.name}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />

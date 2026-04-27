@@ -11,6 +11,7 @@ import PaymentModal from '../components/PaymentModal';
 import type { RoomData, Booking, Holiday } from '../types';
 
 const RoomDetails = () => {
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
     const { id } = useParams();
     const navigate = useNavigate();
     const { user, isAuthenticated } = useContext(AuthContext);
@@ -32,10 +33,10 @@ const RoomDetails = () => {
         const fetchData = async () => {
             try {
                 const [roomRes, bookingsRes, configRes, holidaysRes] = await Promise.all([
-                    api.get(`/rooms/${id}`),
-                    api.get(`/bookings/rooms/${id}`),
-                    api.get(`/config`),
-                    api.get(`/holidays`)
+                    api.get(`${API_URL}/api/rooms/${id}`),
+                    api.get(`${API_URL}/api/bookings/rooms/${id}`),
+                    api.get(`${API_URL}/api/config`),
+                    api.get(`${API_URL}/api/holidays`)
                 ]);
                 setRoom(roomRes.data);
                 setBookings(bookingsRes.data);
@@ -59,10 +60,6 @@ const RoomDetails = () => {
             const start = new Date(booking.check_in);
             const end = new Date(booking.check_out);
 
-            // Generate all dates between check-in and check-out (exclusive of check-out day for new check-ins, but we disable all to be safe)
-            // Or actually, someone can check-in on the exact day someone checks out. 
-            // react-datepicker doesn't easily support half-day disabled without custom day rendering.
-            // For simplicity, we disable the whole interval except checkout day for checkin, but disable fully for strict overlap.
             const intervalDates = eachDayOfInterval({ start, end });
             dates = [...dates, ...intervalDates];
         });
@@ -103,11 +100,10 @@ const RoomDetails = () => {
         setSubmitMessage({ type: '', text: '' });
 
         try {
-            // Local timezone offset fix for full dates
             const checkIn = new Date(startDate.getTime() - (startDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
             const checkOut = new Date(endDate.getTime() - (endDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 
-            const res = await api.post('/bookings', {
+            const res = await api.post(`${API_URL}/api/bookings`, {
                 room_id: room.id,
                 customer_name: user?.username || 'Customer',
                 check_in: checkIn,
@@ -118,11 +114,9 @@ const RoomDetails = () => {
             setCreatedBooking(res.data);
             setShowPaymentModal(true);
 
-            // Refresh bookings to disable newly booked dates
-            const bookingsRes = await api.get(`/bookings/rooms/${id}`);
+            const bookingsRes = await api.get(`${API_URL}/api/bookings/rooms/${id}`);
             setBookings(bookingsRes.data);
 
-            // Reset dates
             setStartDate(null);
             setEndDate(null);
 
@@ -189,18 +183,18 @@ const RoomDetails = () => {
                     {room.images && room.images.length > 0 ? (
                         <>
                             <div className="md:col-span-3 row-span-2 relative group overflow-hidden">
-                                <img src={room.images[0]} alt="Main view" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                <img src={`${API_URL}${room.images[0]}`} alt="Main view" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                             </div>
                             <div className="hidden md:block overflow-hidden relative group bg-stone-300">
                                 {room.images[1] ? (
-                                    <img src={room.images[1]} alt="Side view 1" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    <img src={`${API_URL}${room.images[1]}`} alt="Side view 1" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-stone-400">ไม่มีรูปภาพเพิ่มเติม</div>
                                 )}
                             </div>
                             <div className="hidden md:block overflow-hidden relative group bg-stone-300">
                                 {room.images[2] ? (
-                                    <img src={room.images[2]} alt="Side view 2" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    <img src={`${API_URL}${room.images[2]}`} alt="Side view 2" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-stone-400">ไม่มีรูปภาพเพิ่มเติม</div>
                                 )}

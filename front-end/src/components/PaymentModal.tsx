@@ -8,7 +8,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ booking, onClose, onSuccess
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
     const totalPrice = Number(booking.total_price);
     const amountToPay = booking.payment_type === 'deposit' && booking.deposit_percentage
         ? (totalPrice * booking.deposit_percentage) / 100
@@ -18,7 +18,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ booking, onClose, onSuccess
         setLoading(true);
         setError('');
         try {
-            await api.post('/payments/mock', { booking_id: booking.id });
+            await api.post(`${API_URL}/api/payments/mock`, { booking_id: booking.id });
             onSuccess();
             // Optionally redirect to My Bookings
             navigate('/bookings');
