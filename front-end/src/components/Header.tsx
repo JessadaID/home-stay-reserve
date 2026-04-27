@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FiHome, FiMap, FiList, FiMenu, FiX, FiLogOut, FiUser } from 'react-icons/fi';
+import { FiHome, FiList, FiMenu, FiX, FiLogOut, FiUser } from 'react-icons/fi';
 import { useState, useContext, useRef, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
@@ -32,7 +32,6 @@ const Header = () => {
     const navLinks = [
         { name: 'หน้าหลัก', path: '/', icon: <FiHome className="mr-2" /> },
         { name: 'ห้องพัก', path: '/rooms', icon: <FiList className="mr-2" /> },
-        { name: 'แผนที่', path: '/map', icon: <FiMap className="mr-2" /> },
     ];
 
     const checkActive = (path: string) => location.pathname === path;
@@ -57,6 +56,19 @@ const Header = () => {
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex space-x-8">
+                        {user?.role === 'admin' && (
+                            <Link
+                                key='/admin'
+                                to='/admin/dashboard'
+                                className={`flex items-center px-3 py-2 rounded-md font-medium transition-colors ${checkActive('/admin/dashboard')
+                                    ? 'text-emerald-700 bg-emerald-50'
+                                    : 'text-stone-600 hover:text-emerald-600 hover:bg-stone-50'
+                                    }`}
+                            >
+                                <FiHome className="mr-2" />
+                                Dashboard
+                            </Link>
+                        )}
                         {navLinks.map((link) => (
                             <Link
                                 key={link.path}

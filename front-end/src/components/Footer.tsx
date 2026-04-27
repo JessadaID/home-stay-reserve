@@ -33,11 +33,6 @@ const Footer = () => {
                                     ห้องพักทั้งหมด
                                 </Link>
                             </li>
-                            <li>
-                                <Link to="/map" className="hover:text-emerald-400 transition-colors text-sm">
-                                    แผนที่แสดงตำแหน่งที่พัก
-                                </Link>
-                            </li>
                         </ul>
                     </div>
 

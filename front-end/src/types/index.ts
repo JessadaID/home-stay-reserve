@@ -5,17 +5,14 @@ export interface Marker {
     y_coordinate: number;
 }
 
-export interface MapData {
-    id: number;
-    image_url: string;
-    markers: Marker[];
-}
-
 export interface RoomData {
     id: number;
     name: string;
     description: string;
     price: string | number;
+    capacity?: number;
+    size?: number;
+    amenities?: string[];
     images?: Array<{ url: string }>;
 }
 
@@ -26,6 +23,7 @@ export interface Room {
     price: string | number;
     capacity?: number;
     size?: number;
+    amenities?: string[];
     images?: Array<{ url: string }>;
 }
 

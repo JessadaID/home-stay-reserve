@@ -154,9 +154,11 @@ const RoomDetails = () => {
         );
     }
 
-    const capacity = 2;
-    const size = 35;
-    const amenities = ['เครื่องปรับอากาศ', 'สมาร์ททีวี', 'ตู้เย็น', 'เครื่องทำน้ำอุ่น', 'Wi-Fi ฟรี'];
+    const capacity = room.capacity || 2;
+    const size = room.size || 35;
+    const amenities = room.amenities && room.amenities.length > 0
+        ? room.amenities
+        : ['เครื่องปรับอากาศ', 'สมาร์ททีวี', 'ตู้เย็น', 'เครื่องทำน้ำอุ่น', 'Wi-Fi ฟรี'];
 
     return (
         <div className="bg-stone-50 min-h-screen py-8 px-4">

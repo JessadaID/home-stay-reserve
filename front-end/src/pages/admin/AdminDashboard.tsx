@@ -31,7 +31,6 @@ const AdminDashboard = () => {
                 const uniqueCustomers = new Set(bookings.map((b: any) => b.customer_id).filter(Boolean));
 
                 const totalRevenue = bookings.reduce((sum: number, b: any) => {
-                    // Only count paid or deposit_paid
                     if (b.payment_status === 'paid' || b.payment_status === 'deposit_paid') {
                         return sum + (Number(b.total_price) || 0);
                     }
@@ -117,15 +116,6 @@ const AdminDashboard = () => {
                             </div>
                             <h3 className="text-lg font-bold text-stone-800 mb-2">จัดการห้องพัก</h3>
                             <p className="text-sm text-stone-500">เพิ่ม, แก้ไข หรือลบห้องพัก และกำหนดราคา</p>
-                        </div>
-
-                        {/* Manage Map */}
-                        <div onClick={() => navigate('/admin/map')} className="group cursor-pointer bg-stone-50 hover:bg-blue-50 rounded-2xl p-6 border border-stone-200 hover:border-blue-200 transition-all text-center flex flex-col items-center">
-                            <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
-                                <FiMap size={28} />
-                            </div>
-                            <h3 className="text-lg font-bold text-stone-800 mb-2">จัดการแผนที่</h3>
-                            <p className="text-sm text-stone-500">กำหนดหมุดตำแหน่ง และแก้ไขพิกัดที่พัก</p>
                         </div>
 
                         {/* Manage Holidays */}

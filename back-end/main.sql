@@ -26,7 +26,10 @@ CREATE TABLE `Room` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `description` TEXT,
-  `price` DECIMAL(10, 2) NOT NULL
+  `price` DECIMAL(10, 2) NOT NULL,
+  `capacity` INTEGER,
+  `size` INTEGER,
+  `amenities` TEXT
 );
 
 CREATE TABLE `Image` (
