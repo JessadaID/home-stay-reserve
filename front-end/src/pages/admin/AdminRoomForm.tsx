@@ -13,7 +13,10 @@ const AdminRoomForm = () => {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
-        price: ''
+        price: '',
+        capacity: '',
+        size: '',
+        amenities: ''
     });
 
     // For managing images
@@ -38,7 +41,10 @@ const AdminRoomForm = () => {
                     setFormData({
                         name: res.data.name,
                         description: res.data.description || '',
-                        price: res.data.price
+                        price: res.data.price,
+                        capacity: res.data.capacity?.toString() || '',
+                        size: res.data.size?.toString() || '',
+                        amenities: Array.isArray(res.data.amenities) ? res.data.amenities.join(', ') : ''
                     });
                     setImages(res.data.images || []);
                 } catch (err) {
@@ -60,19 +66,20 @@ const AdminRoomForm = () => {
         setError('');
 
         try {
+            const payload = {
+                name: formData.name,
+                description: formData.description,
+                price: formData.price,
+                capacity: formData.capacity ? Number(formData.capacity) : undefined,
+                size: formData.size ? Number(formData.size) : undefined,
+                amenities: formData.amenities.split(',').map(a => a.trim()).filter(a => a)
+            };
+
             if (isEditMode) {
-                await api.put(`/rooms/${id}`, {
-                    name: formData.name,
-                    description: formData.description,
-                    price: formData.price
-                });
+                await api.put(`/rooms/${id}`, payload);
                 alert('อัปเดตห้องพักเรียบร้อย');
             } else {
-                const res = await api.post(`/rooms`, {
-                    name: formData.name,
-                    description: formData.description,
-                    price: formData.price
-                });
+                const res = await api.post(`/rooms`, payload);
                 alert('เพิ่มห้องพักเรียบร้อย ระบบจะนำท่านไปเชื่อมโยงรูปภาพ');
                 // Redirect to edit mode so they can add images
                 navigate(`/admin/rooms/${res.data.id}/edit`);
@@ -166,6 +173,40 @@ const AdminRoomForm = () => {
                                         className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-stone-400"
                                         placeholder="0.00"
                                     />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-stone-700 mb-2">รองรับได้ (ท่าน)</label>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            value={formData.capacity}
+                                            onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
+                                            className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-stone-400"
+                                            placeholder="2"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-stone-700 mb-2">ขนาดห้อง (ตร.ม.)</label>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            value={formData.size}
+                                            onChange={(e) => setFormData({ ...formData, size: e.target.value })}
+                                            className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-stone-400"
+                                            placeholder="35"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-stone-700 mb-2">สิ่งอำนวยความสะดวก (คั่นด้วยลูกน้ำ)</label>
+                                    <textarea
+                                        rows={3}
+                                        value={formData.amenities}
+                                        onChange={(e) => setFormData({ ...formData, amenities: e.target.value })}
+                                        className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none placeholder:text-stone-400"
+                                        placeholder="เครื่องปรับอากาศ, สมาร์ททีวี, ตู้เย็น, Wi-Fi ฟรี"
+                                    ></textarea>
                                 </div>
 
                                 <div>

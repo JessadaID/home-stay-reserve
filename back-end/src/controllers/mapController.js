@@ -1,4 +1,10 @@
 const db = require('../config/db');
+const path = require('path');
+const fs = require('fs');
+
+const buildImageUrl = (req, filePath) => {
+    return `${req.protocol}://${req.get('host')}/${filePath.replace(/\\/g, '/')}`;
+};
 
 exports.getMap = async (req, res) => {
     try {
@@ -19,16 +25,20 @@ exports.getMap = async (req, res) => {
 };
 
 exports.createMap = async (req, res) => {
-    const { image_url } = req.body;
-
-    if (!image_url) {
-        return res.status(400).json({ message: 'image_url is required' });
-    }
-
     try {
         const existingMap = await db.query('SELECT id FROM "Map"');
         if (existingMap.rows.length > 0) {
             return res.status(400).json({ message: 'Map already exists' });
+        }
+
+        let image_url;
+
+        if (req.file) {
+            image_url = buildImageUrl(req, `uploads/maps/${req.file.filename}`);
+        } else if (req.body.image_url) {
+            image_url = req.body.image_url;
+        } else {
+            return res.status(400).json({ message: 'image_url or file is required' });
         }
 
         const result = await db.query(
@@ -44,9 +54,29 @@ exports.createMap = async (req, res) => {
 
 exports.updateMap = async (req, res) => {
     const { id } = req.params;
-    const { image_url } = req.body;
 
     try {
+        let image_url;
+
+        if (req.file) {
+            const oldMap = await db.query('SELECT image_url FROM "Map" WHERE id = $1', [id]);
+            if (oldMap.rows.length > 0) {
+                const oldUrl = oldMap.rows[0].image_url;
+                if (oldUrl && oldUrl.includes('/uploads/maps/')) {
+                    const filename = path.basename(oldUrl);
+                    const oldPath = path.join(__dirname, '../../uploads/maps', filename);
+                    if (fs.existsSync(oldPath)) {
+                        fs.unlinkSync(oldPath);
+                    }
+                }
+            }
+            image_url = buildImageUrl(req, `uploads/maps/${req.file.filename}`);
+        } else if (req.body.image_url) {
+            image_url = req.body.image_url;
+        } else {
+            return res.status(400).json({ message: 'image_url or file is required' });
+        }
+
         const result = await db.query(
             'UPDATE "Map" SET image_url = $1 WHERE id = $2 RETURNING *',
             [image_url, id]

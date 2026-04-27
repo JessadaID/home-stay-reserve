@@ -9,6 +9,7 @@ exports.getAllRooms = async (req, res) => {
         for (let room of rooms) {
             const imageResult = await db.query('SELECT * FROM "Image" WHERE room_id = $1', [room.id]);
             room.images = imageResult.rows;
+            room.amenities = room.amenities ? JSON.parse(room.amenities) : [];
         }
 
         res.json(rooms);
@@ -30,6 +31,7 @@ exports.getRoomById = async (req, res) => {
         // get images for the room
         const imageResult = await db.query('SELECT * FROM "Image" WHERE room_id = $1', [id]);
         room.images = imageResult.rows;
+        room.amenities = room.amenities ? JSON.parse(room.amenities) : [];
 
         res.json(room);
     } catch (error) {
@@ -39,7 +41,7 @@ exports.getRoomById = async (req, res) => {
 };
 
 exports.createRoom = async (req, res) => {
-    const { name, description, price } = req.body;
+    const { name, description, price, capacity, size, amenities } = req.body;
 
     if (!name || !price) {
         return res.status(400).json({ message: 'name and price are required' });
@@ -47,10 +49,12 @@ exports.createRoom = async (req, res) => {
 
     try {
         const result = await db.query(
-            'INSERT INTO "Room" (name, description, price) VALUES ($1, $2, $3) RETURNING *',
-            [name, description, price]
+            'INSERT INTO "Room" (name, description, price, capacity, size, amenities) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            [name, description, price, capacity || null, size || null, amenities ? JSON.stringify(amenities) : null]
         );
-        res.status(201).json(result.rows[0]);
+        const newRoom = result.rows[0];
+        newRoom.amenities = newRoom.amenities ? JSON.parse(newRoom.amenities) : [];
+        res.status(201).json(newRoom);
     } catch (error) {
         console.error('Error creating room:', error);
         res.status(500).json({ message: 'Server error' });
@@ -59,7 +63,7 @@ exports.createRoom = async (req, res) => {
 
 exports.updateRoom = async (req, res) => {
     const { id } = req.params;
-    const { name, description, price } = req.body;
+    const { name, description, price, capacity, size, amenities } = req.body;
 
     try {
         const check = await db.query('SELECT id FROM "Room" WHERE id = $1', [id]);
@@ -68,10 +72,12 @@ exports.updateRoom = async (req, res) => {
         }
 
         const result = await db.query(
-            'UPDATE "Room" KEY name = COALESCE($1, name), description = COALESCE($2, description), price = COALESCE($3, price) WHERE id = $4 RETURNING *',
-            [name, description, price, id]
+            'UPDATE "Room" SET name = COALESCE($1, name), description = COALESCE($2, description), price = COALESCE($3, price), capacity = COALESCE($4, capacity), size = COALESCE($5, size), amenities = COALESCE($6, amenities) WHERE id = $7 RETURNING *',
+            [name, description, price, capacity !== undefined ? capacity : null, size !== undefined ? size : null, amenities ? JSON.stringify(amenities) : null, id]
         );
-        res.json(result.rows[0]);
+        const updatedRoom = result.rows[0];
+        updatedRoom.amenities = updatedRoom.amenities ? JSON.parse(updatedRoom.amenities) : [];
+        res.json(updatedRoom);
     } catch (error) {
         console.error('Error updating room:', error);
         res.status(500).json({ message: 'Server error' });

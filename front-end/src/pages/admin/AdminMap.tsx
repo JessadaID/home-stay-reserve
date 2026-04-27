@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import { FiChevronLeft, FiPlus, FiTrash2, FiMapPin, FiSave } from 'react-icons/fi';
+import { FiChevronLeft, FiPlus, FiTrash2, FiMapPin, FiSave, FiImage, FiUpload } from 'react-icons/fi';
 import api from '../../api/apiClient';
 import type { MapData } from '../../types';
 
@@ -13,13 +13,22 @@ const AdminMap = () => {
     const [rooms, setRooms] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // For map creation
-    const [newMapUrl, setNewMapUrl] = useState('');
+    // For map creation: file or URL
+    const [newMapFile, setNewMapFile] = useState<File | null>(null);
+    const [newMapPreview, setNewMapPreview] = useState<string>('');
+    const [isUploading, setIsUploading] = useState(false);
+
+    // For replacing existing map image
+    const [isReplacing, setIsReplacing] = useState(false);
+    const [replaceFile, setReplaceFile] = useState<File | null>(null);
+    const [replacePreview, setReplacePreview] = useState<string>('');
 
     // For adding/editing marker
     const [tempMarker, setTempMarker] = useState<{ x: number, y: number } | null>(null);
     const [selectedRoomId, setSelectedRoomId] = useState<string>('');
     const mapContainerRef = useRef<HTMLDivElement>(null);
+    const createFileInputRef = useRef<HTMLInputElement>(null);
+    const replaceFileInputRef = useRef<HTMLInputElement>(null);
 
     const fetchData = async () => {
         setLoading(true);
@@ -31,7 +40,6 @@ const AdminMap = () => {
             setMapData(mapRes.data);
         } catch (error: any) {
             if (error.response?.status === 404) {
-                // Map not found
                 setMapData(null);
             }
         } finally {
@@ -47,13 +55,63 @@ const AdminMap = () => {
         fetchData();
     }, [isAuthenticated, user, navigate]);
 
+    // Handle file selection for new map creation
+    const handleNewFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setNewMapFile(file);
+        setNewMapPreview(URL.createObjectURL(file));
+    };
+
+    // Submit new map via file upload
     const handleCreateMap = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!newMapFile) return;
+
+        setIsUploading(true);
         try {
-            await api.post(`/map`, { image_url: newMapUrl });
+            const formData = new FormData();
+            formData.append('image', newMapFile);
+            await api.post(`/map`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setNewMapFile(null);
+            setNewMapPreview('');
             fetchData();
         } catch (error: any) {
-            alert(error.response?.data?.message || 'Failed to create map');
+            alert(error.response?.data?.message || 'อัปโหลดแผนที่ไม่สำเร็จ');
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    // Handle file selection for replacing existing map
+    const handleReplaceFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setReplaceFile(file);
+        setReplacePreview(URL.createObjectURL(file));
+    };
+
+    // Submit replace map image
+    const handleReplaceMap = async () => {
+        if (!replaceFile || !mapData) return;
+
+        setIsUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('image', replaceFile);
+            await api.put(`/maps/${mapData.id}`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setReplaceFile(null);
+            setReplacePreview('');
+            setIsReplacing(false);
+            fetchData();
+        } catch (error: any) {
+            alert(error.response?.data?.message || 'เปลี่ยนรูปแผนที่ไม่สำเร็จ');
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -66,7 +124,7 @@ const AdminMap = () => {
         const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
         const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
 
-        // Keep it strictly inside the bounds (0 to 100)
+        // Keep strictly inside bounds
         const x = Math.max(0, Math.min(100, xPercent));
         const y = Math.max(0, Math.min(100, yPercent));
 
@@ -126,19 +184,52 @@ const AdminMap = () => {
                 </div>
 
                 {!mapData ? (
-                    <div className="bg-white rounded-3xl shadow-sm border border-stone-200 p-8 text-center max-w-2xl mx-auto">
-                        <h2 className="text-xl font-bold text-stone-800 mb-4">ยังไม่มีแผนที่สำหรับโฮมสเตย์นี้</h2>
-                        <form onSubmit={handleCreateMap} className="space-y-4">
-                            <input
-                                type="url"
-                                required
-                                value={newMapUrl}
-                                onChange={e => setNewMapUrl(e.target.value)}
-                                className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                                placeholder="ลิงก์รูปภาพแผนที่ (เช่น https://.../map.jpg)"
-                            />
-                            <button className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-500 flex items-center justify-center gap-2">
-                                <FiPlus /> เพิ่มแผนที่
+                    /* ── Create new map ── */
+                    <div className="bg-white rounded-3xl shadow-sm border border-stone-200 p-8 max-w-2xl mx-auto">
+                        <h2 className="text-xl font-bold text-stone-800 mb-2">ยังไม่มีแผนที่สำหรับโฮมสเตย์นี้</h2>
+                        <p className="text-sm text-stone-500 mb-6">อัปโหลดรูปภาพแผนที่ (PNG, JPG, WEBP ขนาดไม่เกิน 10MB)</p>
+
+                        <form onSubmit={handleCreateMap} className="space-y-5">
+                            {/* File drop zone */}
+                            <div
+                                className="border-2 border-dashed border-stone-300 rounded-2xl p-8 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/40 transition-all"
+                                onClick={() => createFileInputRef.current?.click()}
+                            >
+                                {newMapPreview ? (
+                                    <img src={newMapPreview} alt="Preview" className="max-h-60 mx-auto rounded-xl object-contain" />
+                                ) : (
+                                    <div className="flex flex-col items-center gap-3 text-stone-400">
+                                        <FiUpload size={36} />
+                                        <p className="font-medium">คลิกเพื่อเลือกไฟล์</p>
+                                        <p className="text-xs">PNG, JPG, WEBP</p>
+                                    </div>
+                                )}
+                                <input
+                                    ref={createFileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleNewFileChange}
+                                />
+                            </div>
+
+                            {newMapFile && (
+                                <p className="text-sm text-stone-500 text-center">
+                                    ไฟล์ที่เลือก: <span className="font-medium text-stone-700">{newMapFile.name}</span>
+                                </p>
+                            )}
+
+                            <button
+                                type="submit"
+                                disabled={!newMapFile || isUploading}
+                                className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
+                            >
+                                {isUploading ? (
+                                    <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
+                                ) : (
+                                    <FiPlus />
+                                )}
+                                {isUploading ? 'กำลังอัปโหลด...' : 'เพิ่มแผนที่'}
                             </button>
                         </form>
                     </div>
@@ -148,10 +239,61 @@ const AdminMap = () => {
                         <div className="flex-1 bg-white rounded-3xl p-6 shadow-sm border border-stone-200 relative">
                             <div className="mb-4 flex justify-between items-center text-sm text-stone-500">
                                 <p><span className="font-bold text-rose-500">*คำแนะนำ:</span> คลิกบริเวณที่หน้าแผนที่เพื่อวางหมุดใหม่</p>
-                                {tempMarker && (
-                                    <button onClick={() => setTempMarker(null)} className="text-stone-400 hover:text-stone-700 underline">ยกเลิกหมุดชั่วคราว</button>
-                                )}
+                                <div className="flex items-center gap-3">
+                                    {/* Replace map image button */}
+                                    <button
+                                        onClick={() => { setIsReplacing(!isReplacing); setReplaceFile(null); setReplacePreview(''); }}
+                                        className="flex items-center gap-1.5 text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                                    >
+                                        <FiImage size={14} /> เปลี่ยนรูปแผนที่
+                                    </button>
+                                    {tempMarker && (
+                                        <button onClick={() => setTempMarker(null)} className="text-stone-400 hover:text-stone-700 underline">ยกเลิกหมุดชั่วคราว</button>
+                                    )}
+                                </div>
                             </div>
+
+                            {/* Replace image panel */}
+                            {isReplacing && (
+                                <div className="mb-4 p-4 bg-blue-50 rounded-2xl border border-blue-200 flex flex-col sm:flex-row items-center gap-4">
+                                    <div
+                                        className="flex-1 border-2 border-dashed border-blue-300 rounded-xl p-4 text-center cursor-pointer hover:bg-blue-100/40 transition-all"
+                                        onClick={() => replaceFileInputRef.current?.click()}
+                                    >
+                                        {replacePreview ? (
+                                            <img src={replacePreview} alt="Preview" className="max-h-28 mx-auto rounded-lg object-contain" />
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-2 text-blue-400">
+                                                <FiUpload size={24} />
+                                                <p className="text-sm font-medium">คลิกเพื่อเลือกไฟล์ใหม่</p>
+                                            </div>
+                                        )}
+                                        <input
+                                            ref={replaceFileInputRef}
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleReplaceFileChange}
+                                        />
+                                    </div>
+                                    <div className="flex flex-col gap-2 shrink-0">
+                                        <button
+                                            onClick={handleReplaceMap}
+                                            disabled={!replaceFile || isUploading}
+                                            className="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+                                        >
+                                            {isUploading ? <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" /> : <FiSave size={14} />}
+                                            {isUploading ? 'กำลังอัปโหลด...' : 'บันทึก'}
+                                        </button>
+                                        <button
+                                            onClick={() => { setIsReplacing(false); setReplaceFile(null); setReplacePreview(''); }}
+                                            className="px-4 py-2 text-sm text-stone-500 hover:text-stone-800 rounded-xl border border-stone-200 transition-colors"
+                                        >
+                                            ยกเลิก
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
 
                             <div
                                 className="w-full bg-stone-100 rounded-xl border border-stone-200 relative overflow-hidden cursor-crosshair group"
@@ -177,7 +319,7 @@ const AdminMap = () => {
                                         }}
                                         title={getRoomName(marker.room_id)}
                                         onClick={(e) => {
-                                            e.stopPropagation(); // prevent map click
+                                            e.stopPropagation();
                                             handleDeleteMarker(marker.id);
                                         }}
                                     >
@@ -197,7 +339,7 @@ const AdminMap = () => {
                                             top: `${tempMarker.y}%`,
                                             transform: 'translate(-50%, -100%)'
                                         }}
-                                        onClick={(e) => e.stopPropagation()} // don't move it again when clicking itself
+                                        onClick={(e) => e.stopPropagation()}
                                     >
                                         <FiMapPin size={24} />
                                     </div>

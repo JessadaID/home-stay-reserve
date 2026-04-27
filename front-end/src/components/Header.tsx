@@ -57,6 +57,19 @@ const Header = () => {
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex space-x-8">
+                        {user?.role === 'admin' && (
+                            <Link
+                                key='/admin'
+                                to='/admin/dashboard'
+                                className={`flex items-center px-3 py-2 rounded-md font-medium transition-colors ${checkActive('/admin/dashboard')
+                                    ? 'text-emerald-700 bg-emerald-50'
+                                    : 'text-stone-600 hover:text-emerald-600 hover:bg-stone-50'
+                                    }`}
+                            >
+                                <FiHome className="mr-2" />
+                                Dashboard
+                            </Link>
+                        )}
                         {navLinks.map((link) => (
                             <Link
                                 key={link.path}
