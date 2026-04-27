@@ -1,59 +1,84 @@
-import { Link } from 'react-router-dom';
-import { FiArrowRight, FiCheckCircle } from 'react-icons/fi';
+import { FiCalendar, FiUsers, FiSearch } from 'react-icons/fi';
 
 const Home = () => {
     return (
-        <div className="flex-1 w-full bg-stone-50">
+        <div className="w-full relative bg-[#263A29] text-stone-200 overflow-hidden min-h-screen">
+            {/* The right-aligned vertical dark leaf image */}
+            <div className="absolute top-0 right-[4%] md:right-[10%] lg:right-[15%] w-[80%] md:w-[280px] lg:w-[320px] h-[65vh] min-h-[500px] z-0 overflow-hidden mix-blend-lighten pointer-events-none hidden md:block">
+                <img
+                    src="https://www.seub.or.th/seubweb/wp-content/uploads/2023/10/%E0%B8%94%E0%B8%AD%E0%B8%A2%E0%B8%AB%E0%B8%A5%E0%B8%A7%E0%B8%87%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B8%94%E0%B8%B2%E0%B8%A7.jpg"
+                    alt="Dark Leaves Texture"
+                    className="w-full h-full object-cover opacity-50"
+                />
+                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0a0f0d] via-[#0a0f0d]/80 to-transparent"></div>
+            </div>
+
+            <div className="absolute top-60 right-[10%] md:right-[90%] lg:right-[60%] w-[80%] md:w-[280px] lg:w-[520px] h-[65vh] min-h-[500px] z-0 overflow-hidden mix-blend-lighten pointer-events-none hidden md:block">
+                <img
+                    src="https://f.ptcdn.info/850/053/000/owx43e8yxDifbU5aNmN-o.jpg"
+                    alt="Dark Leaves Texture"
+                    className="w-full h-full object-cover opacity-50"
+                />
+                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0a0f0d] via-[#0a0f0d]/80 to-transparent"></div>
+            </div>
+
             {/* Hero Section */}
-            <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center bg-stone-900 overflow-hidden">
-                <div className="absolute inset-0 opacity-40">
-                    <img
-                        src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
-                        alt="Warm Homestay Background"
-                        className="w-full h-full object-cover"
-                    />
-                </div>
-                <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-12">
-                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight drop-shadow-lg">
-                        ค้นพบความอบอุ่น <br />
-                        <span className="text-emerald-400">ในทุกการพักผ่อนของคุณ</span>
-                    </h1>
-                    <p className="text-lg md:text-xl text-stone-200 mb-10 max-w-2xl mx-auto font-light drop-shadow-md">
-                        สัมผัสประสบการณ์การพักผ่อนแบบใกล้ชิดธรรมชาติ
-                        พร้อมบริการที่เป็นกันเองและการพักผ่อนที่เหนือระดับ
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link
-                            to="/rooms"
-                            className="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-full shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
-                        >
-                            จองห้องพัก <FiArrowRight />
-                        </Link>
+            <section className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-40 md:pt-48 pb-20 md:pb-24 flex flex-col items-center text-center">
+                <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif text-white mb-6 md:mb-8 tracking-wide drop-shadow-md">
+                    Find Your Perfect Retreat
+                </h1>
+                <p className="text-base sm:text-lg md:text-xl text-stone-300 max-w-3xl font-light leading-relaxed mb-12 drop-shadow-md px-4">
+                    Discover handpicked homestays surrounded by nature's beauty. Experience comfort, warmth, and botanical serenity.
+                </p>
+
+                {/* Search Bar */}
+                <div className="bg-[#18211a] rounded-sm border border-[#2b3a2e] w-full max-w-4xl flex flex-col md:flex-row shadow-2xl relative z-20 mt-4 md:mt-12 text-left">
+                    {/* Check in / Check out */}
+                    <div className="flex-1 px-6 py-4 md:py-6 border-b md:border-b-0 md:border-r border-[#2b3a2e] flex items-center gap-4 hover:bg-[#1f2a22] transition-colors cursor-pointer">
+                        <FiCalendar className="text-stone-400 text-xl shrink-0" />
+                        <span className="text-stone-400 font-light text-sm md:text-base tracking-wide">Check in - Check out</span>
                     </div>
+                    {/* Guests */}
+                    <div className="flex-1 px-6 py-4 md:py-6 border-b md:border-b-0 md:border-r border-[#2b3a2e] flex items-center gap-4 hover:bg-[#1f2a22] transition-colors cursor-pointer">
+                        <FiUsers className="text-stone-400 text-xl shrink-0" />
+                        <span className="text-stone-400 font-light text-sm md:text-base tracking-wide">Guests</span>
+                    </div>
+                    {/* Search Button */}
+                    <button className="bg-[#4a6b52] hover:bg-[#3b5942] text-white font-medium px-8 py-5 md:py-0 flex items-center justify-center gap-3 transition-colors md:w-56 text-base tracking-wide">
+                        <FiSearch className="text-lg" />
+                        <span>Search</span>
+                    </button>
                 </div>
             </section>
 
-            {/* Features Section */}
-            <section className="py-20 px-4 max-w-7xl mx-auto">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold text-stone-800 mb-4">สิ่งอำนวยความสะดวกของเรา</h2>
-                    <div className="h-1 w-20 bg-emerald-500 mx-auto rounded-full"></div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {[
-                        { title: 'เตียงนอนหนานุ่ม', desc: 'หลับสบายตลอดคืนด้วยชุดเครื่องนอนคุณภาพเยี่ยม' },
-                        { title: 'อาหารเช้าท้องถิ่น', desc: 'สัมผัสรสชาติอาหารพื้นเมืองแสนอร่อย ปรุงสดใหม่ทุกวัน' },
-                        { title: 'ใกล้ชิดธรรมชาติ', desc: 'ตื่นมารับอากาศบริสุทธิ์ ชมวิวภูเขาและสายหมอกยามเช้า' },
-                    ].map((feature, i) => (
-                        <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border border-stone-100 hover:shadow-md transition-shadow">
-                            <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
-                                <FiCheckCircle size={28} />
-                            </div>
-                            <h3 className="text-xl font-bold text-stone-800 mb-3">{feature.title}</h3>
-                            <p className="text-stone-600 leading-relaxed">{feature.desc}</p>
+            {/* Our Story Section */}
+            <section className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 mt-12 md:mt-24 pb-32">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
+                    {/* Left side Images (Masonry / overlapping) */}
+                    <div className="relative h-[400px] md:h-[600px] w-full flex justify-center items-center mt-8 md:mt-0">
+                        {/* Background potted plant */}
+                        {/* <div className="absolute top-0 right-[5%] w-[60%] md:w-[250px] h-[250px] md:h-[350px] z-0 opacity-40 shadow-lg hidden md:block">
+                            <img src="https://www.seub.or.th/seubweb/wp-content/uploads/2023/10/%E0%B8%94%E0%B8%AD%E0%B8%A2%E0%B8%AB%E0%B8%A5%E0%B8%A7%E0%B8%87%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B8%94%E0%B8%B2%E0%B8%A7.jpg" alt="Potted Plant" className="w-full h-full object-cover object-left" />
+                        </div> */}
+                        {/* Foreground warm interior */}
+                        <div className="relative z-10 w-[85%] md:w-[350px] lg:w-[450px] h-[300px] md:h-[450px] shadow-2xl mr-auto md:ml-0 md:mr-16">
+                            <img src="https://www.konlongtang.com/wp-content/uploads/2024/01/420969581_917255486434790_311687239160099067_n-1024x1024.jpg" alt="Warm Interior" className="w-full h-full object-cover" />
                         </div>
-                    ))}
+                    </div>
+
+                    {/* Right side Text */}
+                    <div className="px-4 md:px-0">
+                        <h2 className="text-3xl md:text-5xl font-serif text-white mb-6 md:mb-8 tracking-wide">Our Story</h2>
+                        <p className="text-base md:text-lg text-stone-400 font-light leading-relaxed mb-6">
+                            Nestled in the heart of nature, Verdant was born out of a desire to create a sanctuary where modern comfort meets untamed wilderness.
+                        </p>
+                        <p className="text-base md:text-lg text-stone-400 font-light leading-relaxed mb-10">
+                            Every homestay is carefully selected to offer a unique experience, ensuring your stay is as memorable as the landscape around it.
+                        </p>
+                        <button className="text-white border-b border-[#4a6b52] pb-1 font-medium hover:text-[#4a6b52] hover:border-[#3b5942] transition-colors text-lg tracking-wide inline-block">
+                            Read More
+                        </button>
+                    </div>
                 </div>
             </section>
         </div>
