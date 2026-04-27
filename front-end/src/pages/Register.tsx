@@ -30,8 +30,6 @@ const Register = () => {
                 password,
             });
 
-            // After successful registration, route to login or auto-login
-            // For simplicity, route to login page
             navigate('/login');
         } catch (err: any) {
             setError(err.response?.data?.message || 'เกิดข้อผิดพลาดในการสมัครสมาชิก');
