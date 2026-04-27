@@ -5,12 +5,6 @@ export interface Marker {
     y_coordinate: number;
 }
 
-export interface MapData {
-    id: number;
-    image_url: string;
-    markers: Marker[];
-}
-
 export interface RoomData {
     id: number;
     name: string;

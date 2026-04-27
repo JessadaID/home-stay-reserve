@@ -29,12 +29,6 @@ const Home = () => {
                         >
                             จองห้องพัก <FiArrowRight />
                         </Link>
-                        <Link
-                            to="/map"
-                            className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 font-medium rounded-full transition-all duration-300 flex items-center justify-center"
-                        >
-                            ดูแผนที่ที่พัก
-                        </Link>
                     </div>
                 </div>
             </section>

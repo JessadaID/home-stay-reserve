@@ -4,7 +4,6 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
 const roomRoutes = require('./routes/roomRoutes');
-const mapRoutes = require('./routes/mapRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const holidayRoutes = require('./routes/holidayRoutes');
@@ -22,7 +21,6 @@ app.use('/uploads', express.static('uploads'));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
-app.use('/api', mapRoutes); // Handled specific nested routing inside mapRoutes
 app.use('/api/holidays', holidayRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);

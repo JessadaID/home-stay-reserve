@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FiHome, FiMap, FiList, FiMenu, FiX, FiLogOut, FiUser } from 'react-icons/fi';
+import { FiHome, FiList, FiMenu, FiX, FiLogOut, FiUser } from 'react-icons/fi';
 import { useState, useContext, useRef, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
@@ -32,7 +32,6 @@ const Header = () => {
     const navLinks = [
         { name: 'หน้าหลัก', path: '/', icon: <FiHome className="mr-2" /> },
         { name: 'ห้องพัก', path: '/rooms', icon: <FiList className="mr-2" /> },
-        { name: 'แผนที่', path: '/map', icon: <FiMap className="mr-2" /> },
     ];
 
     const checkActive = (path: string) => location.pathname === path;
