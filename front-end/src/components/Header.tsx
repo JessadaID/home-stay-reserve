@@ -12,7 +12,6 @@ const Header = () => {
     const navigate = useNavigate();
     const { user, isAuthenticated, logout } = useContext(AuthContext);
 
-    // Check if we are on the new dark-themed homepage
     const isHome = location.pathname === '/';
 
     useEffect(() => {
@@ -29,11 +28,22 @@ const Header = () => {
         setIsDropdownOpen(false);
     }, [isAuthenticated]);
 
-    // Use specific english text matching the design if on home page
+    useEffect(() => {
+        if (location.hash) {
+            const id = location.hash.replace('#', '');
+            const element = document.getElementById(id);
+            if (element) {
+                setTimeout(() => {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }, 0);
+            }
+        }
+    }, [location]);
+
     const navLinks = isHome ? [
-        { name: 'Destinations', path: '/', icon: null },
-        { name: 'Experiences', path: '/rooms', icon: null },
-        { name: 'About', path: '/#about', icon: null },
+        { name: 'Rooms', path: '/#rooms', icon: null },
+        { name: 'Story', path: '/#story', icon: null },
+        { name: 'Contact', path: '/#contact', icon: null },
     ] : [
         { name: 'หน้าหลัก', path: '/', icon: <FiHome className="mr-2" /> },
         { name: 'ห้องพัก', path: '/rooms', icon: <FiList className="mr-2" /> },
@@ -89,8 +99,8 @@ const Header = () => {
                                     key={link.name}
                                     to={link.path}
                                     className={`flex items-center text-sm font-medium transition-colors ${isHome
-                                            ? 'text-stone-300 hover:text-white'
-                                            : `px-3 py-2 rounded-md ${checkActive(link.path) ? 'text-emerald-700 bg-emerald-50' : 'text-stone-600 hover:text-emerald-600 hover:bg-stone-50'}`
+                                        ? 'text-stone-300 hover:text-white'
+                                        : `px-3 py-2 rounded-md ${checkActive(link.path) ? 'text-emerald-700 bg-emerald-50' : 'text-stone-600 hover:text-emerald-600 hover:bg-stone-50'}`
                                         }`}
                                 >
                                     {link.icon}

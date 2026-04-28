@@ -6,7 +6,7 @@ const Footer = () => {
     const isHome = location.pathname === '/';
 
     return (
-        <footer className={isHome ? "bg-stone-900 text-stone-300 border-t border-white/5" : "bg-stone-900 text-stone-300"}>
+        <footer id="contact" className={isHome ? "bg-stone-900 text-stone-300 border-t border-white/5" : "bg-stone-900 text-stone-300"}>
             <div className={`mx-auto py-12 ${isHome ? 'px-4 sm:px-8 lg:px-12 max-w-[1400px]' : 'px-4 sm:px-6 lg:px-8 max-w-7xl'}`}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Brand & Description */}
