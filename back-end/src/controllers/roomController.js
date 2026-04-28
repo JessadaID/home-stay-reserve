@@ -2,8 +2,11 @@ const db = require('../config/db');
 
 
 exports.getAllRooms = async (req, res) => {
+    const limit = req.query.limit || 10;
+    const offset = req.query.offset || 0;
+
     try {
-        const result = await db.query('SELECT * FROM "Room"');
+        const result = await db.query('SELECT * FROM "Room" LIMIT $1 OFFSET $2', [limit, offset]);
         const rooms = result.rows;
 
         // Process images and amenities
@@ -21,6 +24,7 @@ exports.getAllRooms = async (req, res) => {
 
 exports.getRoomById = async (req, res) => {
     const { id } = req.params;
+
     try {
         const roomResult = await db.query('SELECT * FROM "Room" WHERE id = $1', [id]);
         if (roomResult.rows.length === 0) {

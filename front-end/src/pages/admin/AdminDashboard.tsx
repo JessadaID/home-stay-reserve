@@ -5,6 +5,7 @@ import { FiUsers, FiCalendar, FiDollarSign, FiGrid, FiList } from 'react-icons/f
 import api from '../../api/apiClient';
 
 const AdminDashboard = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
     const { user, isAuthenticated } = useContext(AuthContext);
     const navigate = useNavigate();
     const [stats, setStats] = useState({
@@ -23,7 +24,7 @@ const AdminDashboard = () => {
         const fetchDashboardData = async () => {
             try {
                 const [bookingsRes] = await Promise.all([
-                    api.get('/bookings')
+                    api.get(`${API_URL}/api/bookings`)
                 ]);
 
                 const bookings = bookingsRes.data;
