@@ -19,7 +19,7 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/holidays', holidayRoutes);
 app.use('/api/bookings', bookingRoutes);
