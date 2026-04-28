@@ -3,15 +3,25 @@ import { FiUsers, FiMaximize2 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import api from '../api/apiClient';
 import type { Room } from '../types';
-
+import { useSearchParams } from 'react-router-dom';
 const Rooms = () => {
+    const [searchparamshook] = useSearchParams();
+    const checkin = searchparamshook.get('checkin') || null;
+    const checkout = searchparamshook.get('checkout') || null;
+    const capacity = searchparamshook.get('capacity') || null;
     const [rooms, setRooms] = useState<Room[]>([]);
     const [loading, setLoading] = useState(true);
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
+
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const response = await api.get(`${API_URL}/api/rooms`);
+                const params = new URLSearchParams();
+                if (checkin) params.set('checkin', checkin);
+                if (checkout) params.set('checkout', checkout);
+                if (capacity) params.set('capacity', capacity);
+
+                const response = await api.get(`${API_URL}/api/rooms?${params.toString()}`);
                 setRooms(response.data);
             } catch (error) {
                 console.error("Error fetching rooms:", error);
@@ -21,7 +31,7 @@ const Rooms = () => {
         };
 
         fetchRooms();
-    }, []);
+    }, [checkin, checkout, capacity]);
 
     if (loading) {
         return (

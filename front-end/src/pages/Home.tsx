@@ -1,10 +1,33 @@
-import { FiCalendar, FiUsers, FiSearch } from 'react-icons/fi';
+import { useState } from 'react';
+import { FiCalendar, FiUsers, FiSearch, FiTrash2 } from 'react-icons/fi';
 import Room from '../components/Room';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+    const [startDate, endDate] = dateRange;
+    const [capacity, setcapacity] = useState(0);
+    const navigate = useNavigate();
+
+    const toRoomPage = () => {
+        const params = new URLSearchParams();
+
+        if (startDate && endDate) {
+            params.append('checkin', startDate.toISOString().split('T')[0]);
+            params.append('checkout', endDate.toISOString().split('T')[0]);
+        }
+
+        if (capacity > 0) {
+            params.append('capacity', capacity.toString());
+        }
+
+        navigate(`/rooms?${params.toString()}`);
+    };
+
     return (
         <div className="w-full relative bg-[#0B1D12] text-stone-200 overflow-hidden min-h-screen">
-            {/* The right-aligned vertical dark leaf image */}
             <div className="absolute top-0 right-[4%] md:right-[10%] lg:right-[15%] w-[80%] md:w-[280px] lg:w-[320px] h-[65vh] min-h-[500px] z-0 overflow-hidden mix-blend-lighten pointer-events-none hidden md:block">
                 <img
                     src="https://www.seub.or.th/seubweb/wp-content/uploads/2023/10/%E0%B8%94%E0%B8%AD%E0%B8%A2%E0%B8%AB%E0%B8%A5%E0%B8%A7%E0%B8%87%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B8%94%E0%B8%B2%E0%B8%A7.jpg"
@@ -33,19 +56,94 @@ const Home = () => {
                 </p>
 
                 {/* Search Bar */}
-                <div className="bg-[#18211a] rounded-sm border border-[#2b3a2e] w-full max-w-4xl flex flex-col md:flex-row shadow-2xl relative z-20 mt-4 md:mt-12 text-left">
+                <div className="bg-[#18211a] rounded-sm border border-[#2b3a2e] w-full max-w-4xl flex flex-col md:flex-row shadow-2xl relative z-20 mt-4 md:mt-12 text-left" >
                     {/* Check in / Check out */}
-                    <div className="flex-1 px-6 py-4 md:py-6 border-b md:border-b-0 md:border-r border-[#2b3a2e] flex items-center gap-4 hover:bg-[#1f2a22] transition-colors cursor-pointer">
+                    <div className="flex-1 px-6 py-2 md:py-3 border-b md:border-b-0 md:border-r border-[#2b3a2e] flex items-center gap-4 hover:bg-[#1f2a22] transition-colors relative min-h-[72px] md:min-h-[88px]" onClick={() => document.getElementById('datepicker-input')?.focus()}>
                         <FiCalendar className="text-stone-400 text-xl shrink-0" />
-                        <span className="text-stone-400 font-sans text-sm md:text-base tracking-wide">วันเข้าพัก - วันออก</span>
+                        <div className="flex flex-col flex-1 relative w-full h-full justify-center">
+                            <span
+                                className={`absolute left-0 transition-all duration-300 pointer-events-none font-sans tracking-wide z-10 ${startDate ? 'top-0 md:top-1 text-xs text-[#7bb188]' : 'top-1/2 -translate-y-1/2 text-sm md:text-base text-stone-400'
+                                    }`}
+                            >
+                                วันเข้าพัก - วันออก
+                            </span>
+                            <DatePicker
+                                id='datepicker-input'
+                                selectsRange={true}
+                                startDate={startDate}
+                                endDate={endDate}
+                                minDate={new Date()}
+                                onChange={(update: [Date | null, Date | null]) => {
+                                    setDateRange(update);
+                                }}
+                                className={`w-full bg-transparent text-stone-200 focus:outline-none cursor-pointer border-none p-0 m-0 font-sans text-sm md:text-base relative z-20 transition-all duration-300 ${startDate ? 'pt-5 md:pt-6 opacity-100' : 'pt-0 opacity-0'
+                                    }`}
+                                placeholderText=""
+                                dateFormat="dd MMM yy"
+                            />
+
+                            {startDate && (
+                                <button
+                                    onClick={() => setDateRange([null, null])}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-white transition-colors cursor-pointer hover:bg-[#4a6b52] rounded-full z-50 p-2"
+                                >
+                                    <FiTrash2 className="text-lg" />
+                                </button>
+                            )}
+                        </div>
                     </div>
+
                     {/* Guests */}
-                    <div className="flex-1 px-6 py-4 md:py-6 border-b md:border-b-0 md:border-r border-[#2b3a2e] flex items-center gap-4 hover:bg-[#1f2a22] transition-colors cursor-pointer">
-                        <FiUsers className="text-stone-400 text-xl shrink-0" />
-                        <span className="text-stone-400 font-sans text-sm md:text-base tracking-wide">จำนวนผู้เข้าพัก</span>
+                    <div
+                        onClick={() => document.getElementById('capacity-input')?.focus()}
+                        className="flex-1 px-6 py-4 md:py-6 border-b md:border-b-0 md:border-r border-[#2b3a2e] flex items-center gap-4 hover:bg-[#1f2a22] transition-colors cursor-pointer group"
+                    >
+                        <FiUsers className="text-stone-400 text-xl shrink-0 group-focus-within:text-[#7bb188] transition-colors" />
+
+                        <div className="flex flex-col flex-1 relative w-full h-10 justify-center">
+                            <input
+                                id="capacity-input"
+                                value={(capacity === 0 || !capacity) ? '' : capacity}
+                                onChange={e => {
+                                    const val = e.target.value;
+                                    setcapacity(val === '' ? 0 : parseInt(val, 10));
+                                }}
+                                type='number'
+                                min='1'
+                                placeholder=" "
+                                className="peer w-full bg-transparent text-stone-200 focus:outline-none border-none p-0 m-0 font-sans text-sm md:text-base relative z-20 caret-[#7bb188] opacity-0 focus:opacity-100 focus:pt-5 transition-all duration-300"
+                                style={{
+                                    opacity: (capacity > 0) ? 1 : undefined,
+                                    paddingTop: (capacity > 0) ? '1.25rem' : undefined
+                                }}
+                            />
+
+                            {capacity > 0 && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setcapacity(0);
+                                    }}
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 text-stone-400 hover:text-white transition-colors cursor-pointer hover:bg-[#4a6b52] rounded-full z-50 p-2"
+                                >
+                                    <FiTrash2 className="text-base" />
+                                </button>
+                            )}
+
+                            <span
+                                className={`absolute left-0 transition-all duration-300 pointer-events-none font-sans tracking-wide z-10
+            peer-focus:top-0 peer-focus:text-xs peer-focus:text-[#7bb188]
+            ${capacity > 0
+                                        ? 'top-0 text-xs text-[#7bb188]'
+                                        : 'top-1/2 -translate-y-1/2 text-sm md:text-base text-stone-400'
+                                    }`}
+                            >
+                                จำนวนผู้เข้าพัก
+                            </span>
+                        </div>
                     </div>
                     {/* Search Button */}
-                    <button className="bg-[#4a6b52] hover:bg-[#3b5942] text-white font-medium px-8 py-5 md:py-0 flex items-center justify-center gap-3 transition-colors md:w-56 text-base tracking-wide">
+                    <button onClick={() => { toRoomPage() }} className="bg-[#4a6b52] hover:bg-[#3b5942] text-white font-medium px-8 py-5 md:py-0 flex items-center justify-center gap-3 transition-colors md:w-56 text-base tracking-wide">
                         <FiSearch className="text-lg" />
                         <span className="font-sans">ค้นหา</span>
                     </button>
@@ -55,13 +153,7 @@ const Home = () => {
             {/* Our Story Section */}
             <section className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 mt-12 md:mt-24 pb-32">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
-                    {/* Left side Images (Masonry / overlapping) */}
                     <div className="relative h-[400px] md:h-[600px] w-full flex justify-center items-center mt-8 md:mt-0">
-                        {/* Background potted plant */}
-                        {/* <div className="absolute top-0 right-[5%] w-[60%] md:w-[250px] h-[250px] md:h-[350px] z-0 opacity-40 shadow-lg hidden md:block">
-                            <img src="https://www.seub.or.th/seubweb/wp-content/uploads/2023/10/%E0%B8%94%E0%B8%AD%E0%B8%A2%E0%B8%AB%E0%B8%A5%E0%B8%A7%E0%B8%87%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B8%94%E0%B8%B2%E0%B8%A7.jpg" alt="Potted Plant" className="w-full h-full object-cover object-left" />
-                        </div> */}
-                        {/* Foreground warm interior */}
                         <div className="relative z-10 w-[85%] md:w-[350px] lg:w-[450px] h-[300px] md:h-[450px] shadow-2xl mr-auto md:ml-0 md:mr-16">
                             <img src="https://www.konlongtang.com/wp-content/uploads/2024/01/420969581_917255486434790_311687239160099067_n-1024x1024.jpg" alt="Warm Interior" className="w-full h-full object-cover" />
                         </div>

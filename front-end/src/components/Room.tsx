@@ -23,11 +23,11 @@ const Room = () => {
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">กำลังโหลด...</div>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">เกิดข้อผิดพลาดกรุณาลองใหม่อีกครั้ง</div>;
     }
 
     return (

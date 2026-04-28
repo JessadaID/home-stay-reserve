@@ -2,25 +2,60 @@ const db = require('../config/db');
 
 
 exports.getAllRooms = async (req, res) => {
-    const limit = req.query.limit || 10;
-    const offset = req.query.offset || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = parseInt(req.query.offset) || 0;
+    const capacity = parseInt(req.query.capacity) || 0;
+    const checkin = req.query.checkin || null;
+    const checkout = req.query.checkout || null;
 
     try {
-        const result = await db.query('SELECT * FROM "Room" LIMIT $1 OFFSET $2', [limit, offset]);
-        const rooms = result.rows;
+        const { text, params, addParam } = createQueryBuilder();
 
-        // Process images and amenities
-        for (let room of rooms) {
-            room.images = room.images ? JSON.parse(room.images) : [];
-            room.amenities = room.amenities ? JSON.parse(room.amenities) : [];
+        let sql = `SELECT * FROM "Room" WHERE capacity >= ${addParam(capacity)}`;
+
+        if (checkin && checkout) {
+            sql += `
+                AND id NOT IN (
+                    SELECT room_id FROM "Booking"
+                    WHERE check_in < ${addParam(checkout)}
+                    AND check_out > ${addParam(checkin)}
+                )`;
         }
 
+        sql += ` LIMIT ${addParam(limit)} OFFSET ${addParam(offset)}`;
+
+        const { rows } = await db.query(sql, params);
+
+        const rooms = rows.map(parseRoomJSON);
         res.json(rooms);
+
     } catch (error) {
         console.error('Error fetching rooms:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+
+function createQueryBuilder() {
+    const params = [];
+    const addParam = (value) => {
+        params.push(value);
+        return `$${params.length}`;
+    };
+    return { params, addParam };
+}
+
+function parseRoomJSON(room) {
+    const safeParse = (val) => {
+        try { return val ? JSON.parse(val) : []; }
+        catch { return []; }
+    };
+    return {
+        ...room,
+        images: safeParse(room.images),
+        amenities: safeParse(room.amenities),
+    };
+}
 
 exports.getRoomById = async (req, res) => {
     const { id } = req.params;
