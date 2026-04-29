@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ScrollToTop from '../components/SxrollToTop';
 
 const MainLayout = () => {
     const location = useLocation();
@@ -11,6 +12,7 @@ const MainLayout = () => {
             <Header />
             <main className="flex-grow flex flex-col relative w-full">
                 <Outlet />
+                <ScrollToTop />
             </main>
             <Footer />
         </div>
