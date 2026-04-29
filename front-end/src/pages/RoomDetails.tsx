@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiCheck, FiCalendar, FiUser, FiMaximize2, FiInfo } from 'react-icons/fi';
+import { FiArrowLeft, FiCheck, FiCalendar, FiUser } from 'react-icons/fi';
 import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
 import DatePicker from 'react-datepicker';
@@ -133,17 +133,17 @@ const RoomDetails = () => {
 
     if (loading) {
         return (
-            <div className="bg-stone-50 min-h-screen py-20 flex justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+            <div className="bg-[#0B1D12] min-h-screen py-20 flex justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4a6b52]"></div>
             </div>
         );
     }
 
     if (!room) {
         return (
-            <div className="bg-stone-50 min-h-screen py-20 flex flex-col items-center justify-center">
-                <h2 className="text-2xl font-bold text-stone-600 mb-4">ไม่พบข้อมูลห้องพัก</h2>
-                <Link to="/rooms" className="text-emerald-600 hover:underline">กลับไปหน้ารวมห้องพัก</Link>
+            <div className="bg-[#0B1D12] min-h-screen py-20 flex flex-col items-center justify-center">
+                <h2 className="text-2xl font-bold text-stone-200 mb-4 tracking-wide">ไม่พบข้อมูลห้องพัก</h2>
+                <Link to="/rooms" className="text-[#4a6b52] hover:text-[#7bb188] transition-colors hover:underline">กลับไปหน้ารวมห้องพัก</Link>
             </div>
         );
     }
@@ -152,167 +152,190 @@ const RoomDetails = () => {
     const size = room.size || 35;
     const amenities = room.amenities && room.amenities.length > 0
         ? room.amenities
-        : ['เครื่องปรับอากาศ', 'สมาร์ททีวี', 'ตู้เย็น', 'เครื่องทำน้ำอุ่น', 'Wi-Fi ฟรี'];
+        : ['เครื่องปรับอากาศ', 'ตู้เย็น', 'เครื่องทำน้ำอุ่น', 'Wi-Fi ฟรี'];
 
     return (
-        <div className="bg-stone-50 min-h-screen py-8 px-4">
+        <div className="bg-[#0B1D12] text-stone-200 min-h-screen py-16 px-4 sm:px-8 lg:px-12 font-sans pt-32">
             <div className="max-w-6xl mx-auto">
-                <Link to="/rooms" className="inline-flex items-center gap-2 text-stone-500 hover:text-emerald-600 transition-colors mb-6 font-medium">
+                <Link to="/rooms" className="inline-flex items-center gap-2 text-stone-400 hover:text-[#7bb188] transition-colors mb-8 font-light tracking-wide">
                     <FiArrowLeft /> กลับไปหน้ารวมห้องพัก
                 </Link>
 
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
-                    <div>
-                        <h1 className="text-3xl md:text-5xl font-bold text-stone-800 mb-2">{room.name}</h1>
-                        <div className="flex flex-wrap gap-4 text-sm text-stone-600 mt-4">
-                            <span className="flex items-center gap-1 bg-white px-3 py-1.5 rounded-full shadow-sm border border-stone-200">
-                                <FiUser className="text-emerald-600" /> พักได้ {capacity} ท่าน
-                            </span>
-                            <span className="flex items-center gap-1 bg-white px-3 py-1.5 rounded-full shadow-sm border border-stone-200">
-                                <FiMaximize2 className="text-emerald-600" /> พื้นที่ {size} ตร.ม.
-                            </span>
-                        </div>
-                    </div>
-                    <div className="text-left md:text-right">
-                        <div className="text-3xl font-bold text-emerald-600">฿{Number(room.price).toLocaleString()}</div>
-                        <div className="text-stone-500 text-sm">ต่อคืน (รวมภาษี)</div>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-[500px] mb-12 rounded-3xl overflow-hidden shadow-sm bg-stone-200">
-                    {room.images && room.images.length > 0 ? (
-                        <>
-                            <div className="md:col-span-3 row-span-2 relative group overflow-hidden">
-                                <img src={`${API_URL}${room.images[0]}`} alt="Main view" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                            </div>
-                            <div className="hidden md:block overflow-hidden relative group bg-stone-300">
-                                {room.images[1] ? (
-                                    <img src={`${API_URL}${room.images[1]}`} alt="Side view 1" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-stone-400">ไม่มีรูปภาพเพิ่มเติม</div>
-                                )}
-                            </div>
-                            <div className="hidden md:block overflow-hidden relative group bg-stone-300">
-                                {room.images[2] ? (
-                                    <img src={`${API_URL}${room.images[2]}`} alt="Side view 2" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-stone-400">ไม่มีรูปภาพเพิ่มเติม</div>
-                                )}
-                            </div>
-                        </>
-                    ) : (
-                        <div className="col-span-4 row-span-2 flex items-center justify-center text-stone-400 text-lg">
-                            ยังไม่มีรูปภาพสำหรับห้องพักนี้
-                        </div>
-                    )}
-                </div>
-
-                <div className="flex flex-col lg:flex-row gap-12">
-                    <div className="flex-1 space-y-10">
-                        <section>
-                            <h2 className="text-2xl font-bold text-stone-800 mb-4">รายละเอียดห้องพัก</h2>
-                            <p className="text-stone-600 leading-relaxed text-lg whitespace-pre-wrap">
-                                {room.description || 'ไม่มีคำอธิบาย'}
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-xl font-bold text-stone-800 mb-4">สิ่งอำนวยความสะดวก</h2>
-                            <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                                {amenities.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-3 text-stone-700">
-                                        <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                                            <FiCheck size={14} />
-                                        </div>
-                                        {item}
+                <div className="flex flex-col lg:flex-row gap-8 items-start">
+                    {/* Left Column */}
+                    <div className="flex-1 w-full">
+                        {/* Image Gallery */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 mb-8">
+                            {room.images && room.images.length > 0 ? (
+                                <>
+                                    <div className="md:col-span-4 h-[300px] md:h-[450px] relative group overflow-hidden border border-[#2b3a2e]">
+                                        <img src={`${API_URL}${room.images[0]}`} alt="Main view" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                     </div>
-                                ))}
+                                    {room.images.slice(1, 5).map((img, index) => {
+                                        const isLastSlot = index === 3;
+                                        const remainingCount = (room.images?.length || 0) - 4;
+                                        const showOverlay = isLastSlot && remainingCount > 0;
+
+                                        return (
+                                            <div key={index} className="hidden md:block h-[120px] relative group border border-[#2b3a2e] bg-[#0a0f0d] overflow-hidden">
+                                                <img src={`${API_URL}${img}`} alt={`Side view ${index + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                {showOverlay && (
+                                                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center group-hover:bg-black/50 transition-colors duration-500">
+                                                        <span className="text-white text-2xl font-medium tracking-wider">+{remainingCount}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </>
+                            ) : (
+                                <div className="col-span-4 h-[300px] md:h-[450px] flex items-center justify-center text-stone-500 text-lg font-light border border-[#2b3a2e] bg-[#18211a]">
+                                    ยังไม่มีรูปภาพสำหรับห้องพักนี้
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Title and Info Box */}
+                        <div className="bg-[#18211a] p-8 md:p-10 border border-[#2b3a2e]">
+                            <h1 className="text-4xl md:text-5xl font-sans text-white tracking-wide">{room.name}</h1>
+
+                            <div className="flex gap-12 text-sm text-stone-300 font-light mt-8 pt-8 border-t border-[#2b3a2e]">
+                                <div>
+                                    <div className="text-stone-500 mb-1">ขนาดห้องพัก</div>
+                                    <div className="text-white font-medium text-base">{size} m²</div>
+                                </div>
+                                <div>
+                                    <div className="text-stone-500 mb-1">จำนวนผู้เข้าพัก</div>
+                                    <div className="text-white font-medium text-base">{capacity} Adults</div>
+                                </div>
                             </div>
-                        </section>
+
+                            {/* Description and Amenities */}
+                            <div className="space-y-12 px-2 md:px-0 pt-8">
+                                <section>
+                                    <h2 className="text-2xl font-sans text-white mb-6 tracking-wide">รายละเอียดห้องพัก</h2>
+                                    <p className="text-stone-400 leading-relaxed text-lg whitespace-pre-wrap font-light">
+                                        {room.description || 'ไม่มีคำอธิบาย'}
+                                    </p>
+                                </section>
+
+                                <section>
+                                    <h2 className="text-2xl font-sans text-white mb-6 tracking-wide">สิ่งอำนวยความสะดวก</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-y-5 gap-x-8">
+                                        {amenities.map((item, idx) => (
+                                            <div key={idx} className="flex items-center gap-4 text-stone-300 font-light">
+                                                <div className="w-6 h-6 flex items-center justify-center shrink-0">
+                                                    <FiCheck className="text-[#4a6b52]" size={20} />
+                                                </div>
+                                                {item}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+
+
                     </div>
 
-                    <div className="w-full lg:w-96 shrink-0">
-                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 sticky top-24">
-                            <h3 className="text-xl font-bold text-stone-800 mb-6 flex items-center gap-2">
-                                <FiCalendar className="text-emerald-600" /> ระบุวันเข้าพัก
-                            </h3>
+                    {/* Right Column Booking Panel */}
+                    <div className="w-full lg:w-[400px] shrink-0 sticky top-6 z-10">
+                        <div className="bg-[#18211a] p-8 md:p-10 border border-[#2b3a2e]">
 
-                            <div className="space-y-4 mb-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-stone-700 mb-1">เช็คอิน (วันเข้าพัก)</label>
-                                    <DatePicker
-                                        selected={startDate}
-                                        onChange={(date: Date | null) => {
-                                            if (date) setStartDate(date);
-                                            // Reset end date if needed
-                                            if (date && endDate && date >= endDate) {
-                                                setEndDate(addDays(date, 1));
-                                            }
-                                        }}
-                                        selectsStart
-                                        startDate={startDate || undefined}
-                                        endDate={endDate || undefined}
-                                        minDate={new Date()}
-                                        excludeDates={disabledDates}
-                                        className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                                        placeholderText="เลือกวันเช็คอิน"
-                                        dateFormat="dd/MM/yyyy"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-stone-700 mb-1">เช็คเอาท์ (วันออก)</label>
-                                    <DatePicker
-                                        selected={endDate}
-                                        onChange={(date: Date | null) => {
-                                            if (date) setEndDate(date);
-                                        }}
-                                        selectsEnd
-                                        startDate={startDate || undefined}
-                                        endDate={endDate || undefined}
-                                        minDate={startDate ? addDays(startDate, 1) : addDays(new Date(), 1)}
-                                        excludeDates={disabledDates}
-                                        className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                                        placeholderText="เลือกวันเช็คเอาท์"
-                                        dateFormat="dd/MM/yyyy"
-                                    />
+                            <div className="mb-8 border-b border-[#2b3a2e] pb-6">
+                                <div className="text-4xl font-sans text-white tracking-wide">
+                                    ฿{Number(room.price).toLocaleString()} <span className="text-lg text-stone-500 font-medium font-sans">/ คืน</span>
                                 </div>
                             </div>
 
-                            <div className="border-t border-stone-200 pt-6 mb-6 mt-6">
-                                <div className="flex justify-between text-stone-600 mb-2">
+                            <div className="space-y-4 mb-8">
+                                <div>
+                                    <label className="block text-sm font-bold text-white mb-2 tracking-wide">วันเวลาเข้าพัก</label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-1">
+                                            <FiCalendar className="text-stone-400" />
+                                        </div>
+                                        <DatePicker
+                                            wrapperClassName="w-full"
+                                            selected={startDate}
+                                            onChange={(date: Date | null) => {
+                                                if (date) setStartDate(date);
+                                                if (date && endDate && date >= endDate) {
+                                                    setEndDate(addDays(date, 1));
+                                                }
+                                            }}
+                                            selectsStart
+                                            startDate={startDate || undefined}
+                                            endDate={endDate || undefined}
+                                            minDate={new Date()}
+                                            excludeDates={disabledDates}
+                                            className="w-full pl-12 pr-4 py-4 bg-[#0B1D12] text-stone-200 border border-[#2b3a2e] focus:ring-1 focus:ring-[#4a6b52] focus:border-[#4a6b52] outline-none transition-all font-light"
+                                            placeholderText="เลือกวันเช็คอิน"
+                                            dateFormat="dd/MM/yyyy"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-white mb-2 tracking-wide">วันเวลาเช็คเอาท์</label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-1">
+                                            <FiCalendar className="text-stone-400" />
+                                        </div>
+                                        <DatePicker
+                                            wrapperClassName="w-full"
+                                            selected={endDate}
+                                            onChange={(date: Date | null) => {
+                                                if (date) setEndDate(date);
+                                            }}
+                                            selectsEnd
+                                            startDate={startDate || undefined}
+                                            endDate={endDate || undefined}
+                                            minDate={startDate ? addDays(startDate, 1) : addDays(new Date(), 1)}
+                                            excludeDates={disabledDates}
+                                            className="w-full pl-12 pr-4 py-4 bg-[#0B1D12] text-stone-200 border border-[#2b3a2e] focus:ring-1 focus:ring-[#4a6b52] focus:border-[#4a6b52] outline-none transition-all font-light"
+                                            placeholderText="เลือกวันเช็คเอาท์"
+                                            dateFormat="dd/MM/yyyy"
+                                        />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div className="border-t border-[#2b3a2e] pt-6 mb-8 mt-8 space-y-3">
+                                <div className="flex justify-between text-stone-400 font-light">
                                     <span>฿{Number(room.price).toLocaleString()} x {getDaysCount()} คืน</span>
                                     <span>฿{calculateTotalAmount().toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between text-stone-600 mb-4 pb-4 border-b border-stone-100">
+                                <div className="flex justify-between text-stone-400 pb-6 border-b border-[#2b3a2e] font-light">
                                     <span>รูปแบบการชำระเงิน</span>
-                                    <span className="font-medium capitalize text-stone-800">
+                                    <span className="font-medium capitalize text-stone-200">
                                         {config?.payment_option === 'deposit'
                                             ? `มัดจำ (${config?.deposit_percentage || 50}%)`
                                             : 'ชำระเต็มจำนวน'
                                         }
                                     </span>
                                 </div>
-                                <div className="flex justify-between font-bold text-stone-800 text-lg">
-                                    <span>ยอดรวมทั้งหมด</span>
-                                    <span className="text-emerald-600">฿{calculateTotalAmount().toLocaleString()}</span>
+                                <div className="flex justify-between font-serif text-white text-2xl tracking-wide pt-2">
+                                    <span>Total</span>
+                                    <span className="text-white font-medium">฿{calculateTotalAmount().toLocaleString()}</span>
                                 </div>
                                 {config?.payment_option === 'deposit' && (
-                                    <div className="flex justify-between font-bold text-stone-800 text-base mt-2">
+                                    <div className="flex justify-between text-stone-400 text-sm mt-2 font-light">
                                         <span>ยอดที่ต้องชำระทันที</span>
-                                        <span className="text-orange-500">฿{(calculateTotalAmount() * (config?.deposit_percentage || 50) / 100).toLocaleString()}</span>
+                                        <span className="text-[#c27b4b] font-medium">฿{(calculateTotalAmount() * (config?.deposit_percentage || 50) / 100).toLocaleString()}</span>
                                     </div>
                                 )}
                             </div>
 
                             {submitMessage.text && (
-                                <div className={`p-3 rounded-lg mb-4 text-sm font-medium ${submitMessage.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
+                                <div className={`p-4 mb-6 text-sm font-light tracking-wide ${submitMessage.type === 'success' ? 'bg-[#1f2a22] text-[#7bb188] border border-[#2b3a2e]' : 'bg-[#2a1b1b] text-rose-400 border border-[#3a2020]'}`}>
                                     {submitMessage.text}
                                 </div>
                             )}
 
                             <button
                                 onClick={handleBooking}
-                                className="w-full py-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-500 shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
+                                className="w-full py-4 bg-[#4a6b52] text-white font-medium hover:bg-[#3b5942] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center tracking-wide text-lg"
                                 disabled={!startDate || !endDate || isSubmitting}>
                                 {isSubmitting ? (
                                     <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -320,10 +343,6 @@ const RoomDetails = () => {
                                     isAuthenticated ? 'ยืนยันการจอง' : 'เข้าสู่ระบบเพื่อจอง'
                                 )}
                             </button>
-
-                            <p className="text-center text-xs text-stone-500 mt-4 flex items-center justify-center gap-1">
-                                <FiInfo /> สามารถยกเลิกการจองได้ภายหลัง
-                            </p>
                         </div>
                     </div>
                 </div>
