@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { FiUsers, FiMaximize2 } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { FiUsers, FiMaximize2, FiCheck } from 'react-icons/fi';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import api from '../api/apiClient';
 import type { Room } from '../types';
-import { useSearchParams } from 'react-router-dom';
+
 const Rooms = () => {
     const [searchparamshook] = useSearchParams();
     const checkin = searchparamshook.get('checkin') || null;
@@ -12,6 +12,7 @@ const Rooms = () => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [loading, setLoading] = useState(true);
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRooms = async () => {
@@ -35,68 +36,93 @@ const Rooms = () => {
 
     if (loading) {
         return (
-            <div className="bg-stone-50 min-h-screen py-20 flex justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+            <div className="bg-[#0B1D12] min-h-screen py-20 flex justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4a6b52]"></div>
             </div>
         );
     }
 
     return (
-        <div className="bg-stone-50 min-h-screen py-10 px-4">
+        <div className="w-full relative bg-[#0B1D12] text-stone-200 min-h-screen py-32 px-4 sm:px-8 lg:px-12">
             <div className="max-w-7xl mx-auto">
-                <div className="mb-10 text-center">
-                    <h1 className="text-4xl font-bold text-stone-800 mb-4 tracking-tight">เลือกห้องพักที่ถูกใจ</h1>
-                    <p className="text-stone-600 max-w-2xl mx-auto">
-                        เรามีห้องพักหลากหลายรูปแบบให้คุณเลือก เพื่อตอบโจทย์ทุกความต้องการในการพักผ่อน
+                <div className="mb-20 text-center">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-white mb-6 tracking-wide drop-shadow-md">Rooms</h1>
+                    <p className="text-stone-400 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
+                        เลือกห้องพักที่เหมาะกับคุณ เพื่อประสบการณ์การพักผ่อนที่ดีที่สุด
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {rooms.map((room) => (
-                        <div key={room.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-200 hover:shadow-lg transition-all group flex flex-col">
-                            <div className="relative h-60 overflow-hidden bg-stone-200">
+                <div className="flex flex-col gap-24 md:gap-32 w-full mx-auto">
+                    {rooms.map((room, index) => (
+                        <div key={room.id} className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center`}>
+                            {/* Image */}
+                            <div className="w-full md:w-[55%] shrink-0 relative group overflow-hidden shadow-2xl">
                                 {room.images && room.images.length > 0 ? (
                                     <img
+                                        className="w-full h-[350px] md:h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
                                         src={`${API_URL}${room.images[0]}`}
                                         alt={room.name}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-stone-400">
+                                    <div className="w-full h-[350px] md:h-[500px] flex items-center justify-center bg-[#18211a] text-stone-500">
                                         ไม่มีรูปภาพ
                                     </div>
                                 )}
-                                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold text-emerald-700 shadow-sm">
-                                    ฿{Number(room.price).toLocaleString()} / คืน
-                                </div>
                             </div>
 
-                            <div className="p-6 flex flex-col flex-1">
-                                <h3 className="text-xl font-bold text-stone-800 mb-4">{room.name}</h3>
+                            {/* Details */}
+                            <div className={`w-full md:w-[45%] flex flex-col justify-center text-left py-10 md:py-0 ${index % 2 === 0 ? 'md:pl-16 lg:pl-24' : 'md:pr-16 lg:pr-24'}`}>
+                                <h2 className="text-3xl md:text-4xl font-sans text-white mb-4 tracking-wide">{index + 1}. {room.name}</h2>
 
-                                <div className="flex gap-4 text-sm text-stone-500 mb-6">
-                                    <div className="flex items-center gap-1">
-                                        <FiUsers className="text-emerald-500" />
+                                <div className="flex gap-6 text-sm md:text-base text-stone-400 mb-6 font-light">
+                                    <div className="flex items-center gap-2">
+                                        <FiUsers className="text-[#7bb188]" />
                                         <span>พักได้ {room.capacity || '?'} ท่าน</span>
                                     </div>
-                                    <div className="flex items-center gap-1">
-                                        <FiMaximize2 className="text-emerald-500" />
+                                    <div className="flex items-center gap-2">
+                                        <FiMaximize2 className="text-[#7bb188]" />
                                         <span>{room.size || '?'} ตร.ม.</span>
                                     </div>
                                 </div>
 
-                                <div className="mt-auto">
-                                    <Link to={`/rooms/${room.id}`} className="block w-full text-center py-3 bg-emerald-50 text-emerald-700 font-medium rounded-xl hover:bg-emerald-600 hover:text-white transition-colors">
-                                        ดูรายละเอียดและจอง
-                                    </Link>
+                                <p className="text-base md:text-lg text-stone-400 font-light leading-relaxed mb-6">
+                                    {room.description}
+                                </p>
+
+                                {/* Amenities */}
+                                {room.amenities && room.amenities.length > 0 && (
+                                    <div className="mb-8">
+                                        <h3 className="text-sm text-stone-300 mb-3 uppercase tracking-wider font-medium">สิ่งอำนวยความสะดวก</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {room.amenities.map((amenity, i) => (
+                                                <div key={i} className="flex items-center gap-1.5 text-xs md:text-sm text-stone-300 bg-[#18211a] border border-[#2b3a2e] px-3 py-1.5 rounded-full">
+                                                    <FiCheck className="text-[#4a6b52]" />
+                                                    <span>{amenity}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="flex items-end justify-between mt-auto">
+                                    <p className="text-xl md:text-2xl font-medium text-[#4a6b52] tracking-wide">
+                                        ฿{Number(room.price).toLocaleString()} <span className="text-lg text-stone-500 font-light">/ คืน</span>
+                                    </p>
+
+                                    <button
+                                        onClick={() => navigate(`/rooms/${room.id}`)}
+                                        className="text-white border-b border-[#4a6b52] pb-1 font-medium hover:text-[#4a6b52] hover:border-[#3b5942] transition-colors text-lg tracking-wide inline-block"
+                                    >
+                                        จองห้องพัก
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     ))}
 
                     {rooms.length === 0 && (
-                        <div className="col-span-full text-center text-stone-500 py-10">
-                            ยังไม่มีห้องพักในระบบ
+                        <div className="col-span-full text-center text-stone-500 py-20 text-lg font-light">
+                            ยังไม่มีห้องพักที่ตรงกับเงื่อนไข
                         </div>
                     )}
                 </div>

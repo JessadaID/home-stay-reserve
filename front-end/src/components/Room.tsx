@@ -53,7 +53,7 @@ const Room = () => {
                             </p>
 
                             <button onClick={() => navigate(`/rooms/${room.id}`)} className="mt-8 self-start text-white border-b border-[#4a6b52] pb-1 font-medium hover:text-[#4a6b52] hover:border-[#3b5942] transition-colors text-lg tracking-wide inline-block">
-                                จองห้องพัก
+                                ดูรายละเอียดห้องพัก
                             </button>
                         </div>
                     </div>
