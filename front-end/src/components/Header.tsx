@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FiHome, FiList, FiMenu, FiX, FiLogOut, FiUser } from 'react-icons/fi';
+import { FiList, FiMenu, FiX, FiLogOut, FiUser } from 'react-icons/fi';
 import { useState, useContext, useRef, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
@@ -52,9 +52,13 @@ const Header = () => {
         setIsMenuOpen(false);
     };
 
+    // Check if current page should have a light theme navbar (dark text)
+    const isDark = location.pathname === '/' || location.pathname === '/rooms' || location.pathname.startsWith('/rooms/');
+    const isLight = !isDark;
+
     return (
         // ใช้สไตล์ absolute และ bg-transparent เสมอ (ตามสไตล์ isHome เดิม)
-        <header className="absolute top-0 w-full z-50 bg-transparent py-4">
+        <header className={`absolute top-0 w-full z-50 bg-transparent py-4 ${isLight ? 'border-b border-stone-100' : ''}`}>
             <div className="mx-auto px-4 sm:px-8 lg:px-12 max-w-[1400px]">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo - ใช้รูปแบบ Verdant เสมอ */}
@@ -65,7 +69,7 @@ const Header = () => {
                                 <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
                             </svg>
                         </div>
-                        <span className="text-2xl text-white font-serif tracking-normal mt-1">Verdant</span>
+                        <span className={`text-2xl font-serif tracking-normal mt-1 ${isLight ? 'text-[#1A2F22]' : 'text-white'}`}>Verdant</span>
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -74,7 +78,7 @@ const Header = () => {
                             {user?.role === 'admin' && (
                                 <Link
                                     to='/admin/dashboard'
-                                    className="flex items-center text-sm font-medium transition-colors text-stone-300 hover:text-white"
+                                    className={`flex items-center text-sm font-medium transition-colors ${isLight ? 'text-stone-600 hover:text-[#4a6b52]' : 'text-stone-300 hover:text-white'}`}
                                 >
                                     Dashboard
                                 </Link>
@@ -83,7 +87,7 @@ const Header = () => {
                                 <Link
                                     key={link.name}
                                     to={link.path}
-                                    className="flex items-center text-sm font-medium transition-colors text-stone-300 hover:text-white"
+                                    className={`flex items-center text-sm font-medium transition-colors ${isLight ? 'text-stone-600 hover:text-[#4a6b52]' : 'text-stone-300 hover:text-white'}`}
                                 >
                                     {link.name}
                                 </Link>
@@ -96,9 +100,9 @@ const Header = () => {
                                 <div ref={dropdownRef} className="relative">
                                     <button
                                         onClick={() => setIsDropdownOpen((prev) => !prev)}
-                                        className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-medium hover:bg-white/10 text-stone-200"
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors font-medium ${isLight ? 'hover:bg-stone-100 text-stone-800' : 'hover:bg-white/10 text-stone-200'}`}
                                     >
-                                        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/20 text-white">
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isLight ? 'bg-stone-200 text-stone-700' : 'bg-white/20 text-white'}`}>
                                             <FiUser />
                                         </div>
                                         <span className="max-w-[150px] truncate">{user?.username}</span>
@@ -137,7 +141,7 @@ const Header = () => {
                     <div className="md:hidden flex items-center">
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="text-stone-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-md p-2"
+                            className={`focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-md p-2 ${isLight ? 'text-stone-600 hover:text-[#1A2F22]' : 'text-stone-300 hover:text-white'}`}
                         >
                             {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
                         </button>

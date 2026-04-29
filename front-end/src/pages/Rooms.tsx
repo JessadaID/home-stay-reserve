@@ -50,7 +50,7 @@ const Rooms = () => {
                     <p className="text-stone-400 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
                         เลือกห้องพักที่เหมาะกับคุณ เพื่อประสบการณ์การพักผ่อนที่ดีที่สุด
                     </p>
-                    <h3 className="text-stone-200 mt-6 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">จำนวนห้องพักทั้งหมด {rooms.length} ห้อง</h3>
+                    <h3 className="text-stone-200 mt-6 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">จำนวนห้องพักทั้งหมด  ห้อง</h3>
                     <hr />
                 </div>
 

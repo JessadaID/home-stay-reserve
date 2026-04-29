@@ -120,47 +120,47 @@ const AdminRoomForm = () => {
     if (loading) return null;
 
     return (
-        <div className="bg-stone-50 min-h-[80vh] py-10 px-4">
-            <div className="max-w-4xl mx-auto">
-                <div className="flex items-center gap-4 mb-8">
-                    <Link to="/admin/rooms" className="p-2 bg-white text-stone-500 hover:text-stone-800 rounded-xl shadow-sm border border-stone-200 transition-colors">
-                        <FiChevronLeft size={24} />
+        <div className="bg-slate-50 min-h-screen pt-32 pb-8 px-6">
+            <div className="max-w-5xl mx-auto">
+                <div className="flex items-center gap-4 mb-6 border-b border-slate-200 pb-4">
+                    <Link to="/admin/rooms" className="p-2 bg-white text-slate-500 hover:text-slate-800 rounded shadow-sm border border-slate-200 transition-colors">
+                        <FiChevronLeft size={20} />
                     </Link>
                     <div>
-                        <h1 className="text-3xl font-bold text-stone-800 tracking-tight">
-                            {isEditMode ? 'แก้ไขห้องพัก' : 'เพิ่มห้องพักใหม่'}
+                        <h1 className="text-xl font-bold text-slate-800">
+                            {isEditMode ? 'Edit Room' : 'Add New Room'}
                         </h1>
-                        <p className="text-stone-600 mt-1">กรอกข้อมูลให้ครบถ้วนเพื่อเปิดให้บริการ</p>
+                        <p className="text-slate-500 text-sm mt-1">Fill in the room details and configuration</p>
                     </div>
                 </div>
 
                 {error && (
-                    <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl text-sm">
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded text-sm">
                         {error}
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Main Form */}
                     <div className="lg:col-span-2">
-                        <form onSubmit={handleSave} className="bg-white rounded-3xl shadow-sm border border-stone-200 p-8">
-                            <h2 className="text-xl font-bold text-stone-800 mb-6 border-b border-stone-100 pb-4">ข้อมูลพื้นฐาน</h2>
+                        <form onSubmit={handleSave} className="bg-white rounded shadow-sm border border-slate-200 p-6">
+                            <h2 className="text-base font-semibold text-slate-800 mb-4 border-b border-slate-100 pb-3">Basic Information</h2>
 
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-stone-700 mb-2">ชื่อห้องพัก</label>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Room Name</label>
                                     <input
                                         type="text"
                                         required
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-stone-400"
-                                        placeholder="เช่น ห้องเตียงเดี่ยว ดีลักซ์"
+                                        className="w-full px-3 py-2 text-sm rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400"
+                                        placeholder="e.g. Deluxe Double Room"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-stone-700 mb-2">ราคาต่อคืน (บาท)</label>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Price per night (THB)</label>
                                     <input
                                         type="number"
                                         required
@@ -168,89 +168,89 @@ const AdminRoomForm = () => {
                                         step="0.01"
                                         value={formData.price}
                                         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-stone-400"
+                                        className="w-full px-3 py-2 text-sm rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400"
                                         placeholder="0.00"
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-stone-700 mb-2">รองรับได้ (ท่าน)</label>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Capacity (Guests)</label>
                                         <input
                                             type="number"
                                             min="1"
                                             value={formData.capacity}
                                             onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-stone-400"
+                                            className="w-full px-3 py-2 text-sm rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400"
                                             placeholder="2"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-stone-700 mb-2">ขนาดห้อง (ตร.ม.)</label>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Size (sqm)</label>
                                         <input
                                             type="number"
                                             min="1"
                                             value={formData.size}
                                             onChange={(e) => setFormData({ ...formData, size: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-stone-400"
+                                            className="w-full px-3 py-2 text-sm rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400"
                                             placeholder="35"
                                         />
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-stone-700 mb-2">สิ่งอำนวยความสะดวก (คั่นด้วยลูกน้ำ)</label>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Amenities (Comma separated)</label>
                                     <textarea
-                                        rows={3}
+                                        rows={2}
                                         value={formData.amenities}
                                         onChange={(e) => setFormData({ ...formData, amenities: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none placeholder:text-stone-400"
-                                        placeholder="เครื่องปรับอากาศ, สมาร์ททีวี, ตู้เย็น, Wi-Fi ฟรี"
+                                        className="w-full px-3 py-2 text-sm rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none placeholder:text-slate-400"
+                                        placeholder="AC, Smart TV, Fridge, Free Wi-Fi"
                                     ></textarea>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-stone-700 mb-2">รายละเอียดห้องพัก</label>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
                                     <textarea
-                                        rows={5}
+                                        rows={4}
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none placeholder:text-stone-400"
-                                        placeholder="ขนาดห้อง สิ้งอำนวยความสะดวก ฯลฯ"
+                                        className="w-full px-3 py-2 text-sm rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none placeholder:text-slate-400"
+                                        placeholder="Room details..."
                                     ></textarea>
                                 </div>
                             </div>
 
-                            <div className="mt-8 pt-6 border-t border-stone-100">
+                            <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="w-full py-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-500 shadow-md transition-all disabled:opacity-70 flex justify-center items-center"
+                                    className="px-6 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 shadow-sm transition-colors disabled:opacity-70 flex justify-center items-center"
                                 >
-                                    {saving ? 'กำลังบันทึก...' : 'บันทึกข้อมูลห้องพัก'}
+                                    {saving ? 'Saving...' : 'Save Room Data'}
                                 </button>
                             </div>
                         </form>
                     </div>
 
                     {/* Images Column */}
-                    <div className="lg:col-span-1 space-y-8">
-                        <div className="bg-white rounded-3xl shadow-sm border border-stone-200 p-6">
-                            <h2 className="text-lg font-bold text-stone-800 mb-4">{isEditMode ? 'อัปโหลดรูปภาพใหม่ (จะเขียนทับรูปเดิมทั้งหมด)' : 'เพิ่มรูปภาพใหม่'}</h2>
-                            <div className="space-y-4">
+                    <div className="lg:col-span-1 space-y-4">
+                        <div className="bg-white rounded shadow-sm border border-slate-200 p-5">
+                            <h2 className="text-sm font-semibold text-slate-800 mb-3">{isEditMode ? 'Upload New Images (Overwrites existing)' : 'Add Images'}</h2>
+                            <div className="space-y-3">
                                 <div>
                                     <input
                                         type="file"
                                         multiple
                                         accept="image/*"
                                         onChange={handleFileChange}
-                                        className="w-full px-3 py-2 text-sm rounded-lg border border-stone-300 focus:ring-2 focus:ring-emerald-500 outline-none"
+                                        className="w-full px-2 py-1.5 text-xs rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 outline-none"
                                     />
                                 </div>
                                 {imageFiles.length > 0 && (
-                                    <div className="text-sm text-stone-600">
-                                        <p className="font-semibold mb-1">ไฟล์ที่เลือก: {imageFiles.length} ไฟล์</p>
-                                        <ul className="list-disc pl-5">
+                                    <div className="text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-100">
+                                        <p className="font-semibold mb-1">Selected: {imageFiles.length} files</p>
+                                        <ul className="list-disc pl-4 space-y-0.5">
                                             {imageFiles.map((f, i) => (
-                                                <li key={i}>{f.name}</li>
+                                                <li key={i} className="truncate">{f.name}</li>
                                             ))}
                                         </ul>
                                     </div>
@@ -258,29 +258,31 @@ const AdminRoomForm = () => {
                             </div>
                         </div>
 
-                        <div className="space-y-4">
-                            <h2 className="text-lg font-bold text-stone-800">แกลลอรี่ ({images.length})</h2>
+                        <div className="bg-white rounded shadow-sm border border-slate-200 p-5">
+                            <h2 className="text-sm font-semibold text-slate-800 mb-3">Gallery ({images.length})</h2>
                             {images.length === 0 ? (
-                                <div className="p-6 bg-stone-100 rounded-2xl text-center text-stone-500 text-sm">
-                                    ยังไม่มีรูปภาพ
+                                <div className="p-4 bg-slate-50 border border-slate-100 rounded text-center text-slate-500 text-xs">
+                                    No images
                                 </div>
                             ) : (
-                                images.map((url, index) => (
-                                    <div key={index} className="relative group rounded-2xl overflow-hidden border border-stone-200 shadow-sm">
-                                        <img src={url.startsWith('/') ? `http://localhost:3000${url}` : url} alt={`Room image ${index + 1}`} className="w-full h-40 object-cover" />
-                                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-8">
-                                            <p className="text-white text-xs truncate drop-shadow-md">รูปที่ {index + 1}</p>
+                                <div className="space-y-3">
+                                    {images.map((url, index) => (
+                                        <div key={index} className="relative group rounded overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
+                                            <img src={url.startsWith('/') ? `http://localhost:3000${url}` : url} alt={`Room image ${index + 1}`} className="w-full h-24 object-cover" />
+                                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 pt-6">
+                                                <p className="text-white text-[10px] truncate">Image {index + 1}</p>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteImage(index)}
+                                                className="absolute top-1 right-1 p-1.5 bg-red-600 text-white rounded opacity-0 group-hover:opacity-100 hover:bg-red-700 transition-all shadow"
+                                                title="Delete this image"
+                                            >
+                                                <FiTrash2 size={12} />
+                                            </button>
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleDeleteImage(index)}
-                                            className="absolute top-2 right-2 p-2 bg-rose-600 text-white rounded-lg opacity-0 group-hover:opacity-100 hover:bg-rose-500 transition-all shadow-md"
-                                            title="ลบรูปภาพนี้"
-                                        >
-                                            <FiTrash2 size={16} />
-                                        </button>
-                                    </div>
-                                ))
+                                    ))}
+                                </div>
                             )}
                         </div>
                     </div>

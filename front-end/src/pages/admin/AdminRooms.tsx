@@ -50,70 +50,70 @@ const AdminRooms = () => {
     if (!user || user.role !== 'admin') return null;
 
     return (
-        <div className="bg-stone-50 min-h-[80vh] py-10 px-4">
-            <div className="max-w-6xl mx-auto">
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
-                        <Link to="/admin/dashboard" className="p-2 bg-white text-stone-500 hover:text-stone-800 rounded-xl shadow-sm border border-stone-200 transition-colors">
-                            <FiChevronLeft size={24} />
+        <div className="bg-slate-50 min-h-screen pt-32 pb-8 px-6">
+            <div className="max-w-7xl mx-auto">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 border-b border-slate-200 pb-4">
+                    <div className="flex items-center gap-4 mb-4 sm:mb-0">
+                        <Link to="/admin/dashboard" className="p-2 bg-white text-slate-500 hover:text-slate-800 rounded shadow-sm border border-slate-200 transition-colors">
+                            <FiChevronLeft size={20} />
                         </Link>
                         <div>
-                            <h1 className="text-3xl font-bold text-stone-800 tracking-tight">จัดการห้องพัก</h1>
-                            <p className="text-stone-600 mt-1">ตั้งค่า อัปเดตราคา และลบห้องพัก</p>
+                            <h1 className="text-xl font-bold text-slate-800">Manage Rooms</h1>
+                            <p className="text-slate-500 text-sm mt-1">Configure pricing and descriptions</p>
                         </div>
                     </div>
                     <Link
                         to={`/admin/rooms/new`}
-                        className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-3 rounded-xl font-bold hover:bg-emerald-500 shadow-sm transition-all"
+                        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 shadow-sm transition-all text-sm"
                     >
-                        <FiPlus size={20} /> เพิ่มห้องพัก
+                        <FiPlus size={18} /> Add Room
                     </Link>
                 </div>
 
 
                 {loading ? (
-                    <div className="text-center py-20 text-stone-500 flex flex-col items-center">
-                        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                        กำลังโหลดข้อมูล...
+                    <div className="text-center py-20 text-slate-500 flex flex-col items-center">
+                        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        Loading data...
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {rooms.length === 0 ? (
-                            <div className="col-span-full text-center py-20 bg-white rounded-3xl border border-stone-200 text-stone-500">
-                                ไม่พบห้องพักในโฮมสเตย์นี้ กรุณาเพิ่มห้องพักใหม่
+                            <div className="col-span-full text-center py-20 bg-white rounded border border-slate-200 text-slate-500 shadow-sm">
+                                No rooms found. Please add a new room.
                             </div>
                         ) : (
                             rooms.map(room => (
-                                <div key={room.id} className="bg-white rounded-3xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
-                                    <div className="h-48 bg-stone-200 relative">
+                                <div key={room.id} className="bg-white rounded shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                                    <div className="h-40 bg-slate-200 relative border-b border-slate-200">
                                         {room.images && room.images.length > 0 ? (
                                             <img src={`${import.meta.env.VITE_API_URL}${room.images[0]}`} alt={room.name} className="w-full h-full object-cover" />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-stone-400">
-                                                ไม่มีรูปภาพ
+                                            <div className="w-full h-full flex items-center justify-center text-slate-400 text-sm">
+                                                No Image
                                             </div>
                                         )}
-                                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold text-stone-800 shadow-sm">
-                                            ฿{Number(room.price).toLocaleString()} / คืน
+                                        <div className="absolute top-2 right-2 bg-white/95 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-slate-800 shadow border border-slate-100">
+                                            ฿{Number(room.price).toLocaleString()}
                                         </div>
                                     </div>
-                                    <div className="p-6 flex-1 flex flex-col">
-                                        <h3 className="text-xl font-bold text-stone-800 mb-2 line-clamp-1">{room.name}</h3>
-                                        <p className="text-stone-500 text-sm mb-6 line-clamp-2 pb-4 border-b border-stone-100 flex-1">{room.description || 'ไม่มีรายละเอียด'}</p>
+                                    <div className="p-4 flex-1 flex flex-col">
+                                        <h3 className="text-base font-bold text-slate-800 mb-1 line-clamp-1">{room.name}</h3>
+                                        <p className="text-slate-500 text-xs mb-4 line-clamp-2 pb-4 border-b border-slate-100 flex-1">{room.description || 'No description'}</p>
 
-                                        <div className="flex items-center gap-3 mt-auto">
+                                        <div className="flex items-center gap-2 mt-auto">
                                             <Link
                                                 to={`/admin/rooms/${room.id}/edit`}
-                                                className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-stone-100 text-stone-700 font-medium rounded-xl hover:bg-stone-200 transition-colors"
+                                                className="flex-1 flex items-center justify-center gap-2 py-2 bg-slate-50 text-slate-700 text-sm font-medium rounded border border-slate-200 hover:bg-slate-100 transition-colors"
                                             >
-                                                <FiEdit2 size={18} /> แก้ไข
+                                                <FiEdit2 size={14} /> Edit
                                             </Link>
                                             <button
                                                 onClick={() => handleDeleteRoom(room.id)}
-                                                className="p-2.5 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-colors tooltip"
-                                                title="ลบห้องพัก"
+                                                className="p-2 bg-red-50 text-red-600 rounded border border-red-100 hover:bg-red-100 transition-colors tooltip"
+                                                title="Delete Room"
                                             >
-                                                <FiTrash2 size={20} />
+                                                <FiTrash2 size={16} />
                                             </button>
                                         </div>
                                     </div>

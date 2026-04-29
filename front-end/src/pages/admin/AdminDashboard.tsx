@@ -5,7 +5,7 @@ import { FiUsers, FiCalendar, FiDollarSign, FiGrid, FiList } from 'react-icons/f
 import api from '../../api/apiClient';
 
 const AdminDashboard = () => {
-    const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
     const { user, isAuthenticated } = useContext(AuthContext);
     const navigate = useNavigate();
     const [stats, setStats] = useState({
@@ -51,81 +51,85 @@ const AdminDashboard = () => {
         };
 
         fetchDashboardData();
-    }, [isAuthenticated, user, navigate]);
+    }, [isAuthenticated, user, navigate, API_URL]);
 
     if (!user || user.role !== 'admin') {
         return null;
     }
 
     return (
-        <div className="bg-stone-50 min-h-[80vh] py-10 px-4">
-            <div className="max-w-6xl mx-auto">
-                <div className="mb-10">
-                    <h1 className="text-3xl font-bold text-stone-800 tracking-tight">Admin Dashboard</h1>
-                    <p className="text-stone-600 mt-2">ยินดีต้อนรับกลับ, {user.username}. ภาพรวมของระบบ Homestay Reserve</p>
+        <div className="bg-slate-50 min-h-screen pt-32 pb-8 px-6">
+            <div className="max-w-7xl mx-auto">
+                <div className="mb-6 flex justify-between items-end border-b border-slate-200 pb-4">
+                    <div>
+                        <h1 className="text-2xl font-bold text-slate-800">Control Panel</h1>
+                        <p className="text-slate-500 text-sm mt-1">Logged in as {user.username}</p>
+                    </div>
                 </div>
 
                 {/* KPI Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 flex items-center gap-4">
-                        <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600">
-                            <FiCalendar size={24} />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div className="bg-white rounded border border-slate-200 p-5 shadow-sm flex items-center gap-4">
+                        <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded flex items-center justify-center">
+                            <FiCalendar size={20} />
                         </div>
                         <div>
-                            <p className="text-stone-500 text-sm font-medium">การจองทั้งหมด</p>
-                            <h3 className="text-2xl font-bold text-stone-800">{loading ? '--' : stats.bookings} รายการ</h3>
+                            <p className="text-slate-500 text-xs font-semibold uppercase tracking-wide">Total Bookings</p>
+                            <h3 className="text-xl font-bold text-slate-800 mt-1">{loading ? '--' : stats.bookings}</h3>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 flex items-center gap-4">
-                        <div className="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600">
-                            <FiUsers size={24} />
+                    <div className="bg-white rounded border border-slate-200 p-5 shadow-sm flex items-center gap-4">
+                        <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded flex items-center justify-center">
+                            <FiUsers size={20} />
                         </div>
                         <div>
-                            <p className="text-stone-500 text-sm font-medium">ลูกค้าทั้งหมด</p>
-                            <h3 className="text-2xl font-bold text-stone-800">{loading ? '--' : stats.customers} คน</h3>
+                            <p className="text-slate-500 text-xs font-semibold uppercase tracking-wide">Total Customers</p>
+                            <h3 className="text-xl font-bold text-slate-800 mt-1">{loading ? '--' : stats.customers}</h3>
                         </div>
                     </div>
-                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 flex items-center gap-4">
-                        <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600">
-                            <FiDollarSign size={24} />
+                    <div className="bg-white rounded border border-slate-200 p-5 shadow-sm flex items-center gap-4">
+                        <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded flex items-center justify-center">
+                            <FiDollarSign size={20} />
                         </div>
                         <div>
-                            <p className="text-stone-500 text-sm font-medium">รายได้รวมที่ชำระแล้ว</p>
-                            <h3 className="text-2xl font-bold text-stone-800">{loading ? '--' : `฿${stats.revenue.toLocaleString()}`}</h3>
+                            <p className="text-slate-500 text-xs font-semibold uppercase tracking-wide">Total Revenue</p>
+                            <h3 className="text-xl font-bold text-slate-800 mt-1">{loading ? '--' : `฿${stats.revenue.toLocaleString()}`}</h3>
                         </div>
                     </div>
                 </div>
 
                 {/* Main Dashboard Info Area */}
-                <div className="bg-white rounded-3xl shadow-sm border border-stone-200 p-8 min-h-[400px]">
-                    <h2 className="text-2xl font-bold text-stone-800 mb-8 border-b border-stone-100 pb-4">ฟังก์ชันการจัดการ</h2>
+                <div className="bg-white rounded shadow-sm border border-slate-200">
+                    <div className="border-b border-slate-200 p-4">
+                        <h2 className="text-lg font-semibold text-slate-800">System Modules</h2>
+                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {/* Manage Bookings */}
-                        <div onClick={() => navigate('/admin/bookings')} className="group cursor-pointer bg-stone-50 hover:bg-purple-50 rounded-2xl p-6 border border-stone-200 hover:border-purple-200 transition-all text-center flex flex-col items-center">
-                            <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center text-purple-600 mb-4 group-hover:scale-110 transition-transform">
-                                <FiList size={28} />
+                        <div onClick={() => navigate('/admin/bookings')} className="cursor-pointer bg-slate-50 hover:bg-slate-100 rounded border border-slate-200 p-5 transition-colors flex flex-col items-start">
+                            <div className="text-slate-700 mb-3">
+                                <FiList size={24} />
                             </div>
-                            <h3 className="text-lg font-bold text-stone-800 mb-2">จัดการออเดอร์ (Bookings)</h3>
-                            <p className="text-sm text-stone-500">ตรวจสอบและแก้ไขสถานะออเดอร์</p>
+                            <h3 className="text-base font-semibold text-slate-800">Bookings</h3>
+                            <p className="text-xs text-slate-500 mt-1">Manage customer reservations</p>
                         </div>
                         {/* Manage Rooms */}
-                        <div onClick={() => navigate('/admin/rooms')} className="group cursor-pointer bg-stone-50 hover:bg-emerald-50 rounded-2xl p-6 border border-stone-200 hover:border-emerald-200 transition-all text-center flex flex-col items-center">
-                            <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center text-emerald-600 mb-4 group-hover:scale-110 transition-transform">
-                                <FiGrid size={28} />
+                        <div onClick={() => navigate('/admin/rooms')} className="cursor-pointer bg-slate-50 hover:bg-slate-100 rounded border border-slate-200 p-5 transition-colors flex flex-col items-start">
+                            <div className="text-slate-700 mb-3">
+                                <FiGrid size={24} />
                             </div>
-                            <h3 className="text-lg font-bold text-stone-800 mb-2">จัดการห้องพัก</h3>
-                            <p className="text-sm text-stone-500">เพิ่ม, แก้ไข หรือลบห้องพัก และกำหนดราคา</p>
+                            <h3 className="text-base font-semibold text-slate-800">Rooms</h3>
+                            <p className="text-xs text-slate-500 mt-1">Manage rooms and pricing</p>
                         </div>
 
                         {/* Manage Holidays */}
-                        <div onClick={() => navigate('/admin/holidays')} className="group cursor-pointer bg-stone-50 hover:bg-rose-50 rounded-2xl p-6 border border-stone-200 hover:border-rose-200 transition-all text-center flex flex-col items-center">
-                            <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center text-rose-600 mb-4 group-hover:scale-110 transition-transform">
-                                <FiCalendar size={28} />
+                        <div onClick={() => navigate('/admin/holidays')} className="cursor-pointer bg-slate-50 hover:bg-slate-100 rounded border border-slate-200 p-5 transition-colors flex flex-col items-start">
+                            <div className="text-slate-700 mb-3">
+                                <FiCalendar size={24} />
                             </div>
-                            <h3 className="text-lg font-bold text-stone-800 mb-2">จัดการวันหยุดที่พัก</h3>
-                            <p className="text-sm text-stone-500">กำหนดวันปิดบริการ หรือวันหยุดของโฮมสเตย์</p>
+                            <h3 className="text-base font-semibold text-slate-800">Holidays</h3>
+                            <p className="text-xs text-slate-500 mt-1">Manage closed dates</p>
                         </div>
                     </div>
                 </div>

@@ -31,50 +31,50 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ booking, onClose, onSuccess
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl relative overflow-hidden">
+        <div className="fixed inset-0 bg-stone-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div className="bg-[#F9FAF9] rounded-sm max-w-md w-full p-8 shadow-2xl relative overflow-hidden border border-[#E5EAE5]">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-stone-400 hover:text-stone-600 transition-colors"
+                    className="absolute top-4 right-4 text-stone-400 hover:text-[#1A2F22] transition-colors"
                 >
                     <FiX size={24} />
                 </button>
 
-                <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <FiCreditCard size={32} />
+                <div className="text-center mb-8">
+                    <div className="w-16 h-16 bg-white border border-[#E5EAE5] text-[#4a6b52] rounded-sm flex items-center justify-center mx-auto mb-4 shadow-sm">
+                        <FiCreditCard size={30} />
                     </div>
-                    <h2 className="text-2xl font-bold text-stone-800">ยืนยันการชำระเงิน</h2>
-                    <p className="text-stone-500 text-sm mt-1">ทำรายการชำระเงินเพื่อยืนยันการจอง</p>
+                    <h2 className="text-2xl font-sans text-[#1A2F22] tracking-wide mb-1">ยืนยันการชำระเงิน</h2>
+                    <p className="text-stone-500 font-light text-sm">ทำรายการชำระเงินเพื่อยืนยันการจอง</p>
                 </div>
 
-                <div className="bg-stone-50 rounded-xl p-4 mb-6 text-sm border border-stone-200">
-                    <div className="flex justify-between mb-2">
-                        <span className="text-stone-600">รหัสการจอง:</span>
-                        <span className="font-semibold text-stone-800">#{booking.id}</span>
+                <div className="bg-white rounded-sm p-5 mb-8 text-sm border border-[#E5EAE5] shadow-sm">
+                    <div className="flex justify-between mb-3">
+                        <span className="text-stone-500 font-light">รหัสการจอง:</span>
+                        <span className="font-medium text-[#1A2F22]">#{booking.id}</span>
                     </div>
-                    <div className="flex justify-between mb-2">
-                        <span className="text-stone-600">ยอดรวมทั้งหมด:</span>
-                        <span className="font-semibold text-stone-800">฿{totalPrice.toLocaleString()}</span>
+                    <div className="flex justify-between mb-3">
+                        <span className="text-stone-500 font-light">ยอดรวมทั้งหมด:</span>
+                        <span className="font-medium text-[#1A2F22]">฿{totalPrice.toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between mb-2">
-                        <span className="text-stone-600">รูปแบบการชำระเงิน:</span>
-                        <span className="font-semibold text-stone-800 capitalize">
+                    <div className="flex justify-between mb-4">
+                        <span className="text-stone-500 font-light">รูปแบบการชำระเงิน:</span>
+                        <span className="font-medium text-[#1A2F22] capitalize">
                             {booking.payment_type === 'deposit'
                                 ? `มัดจำ (${booking.deposit_percentage}%)`
                                 : 'ชำระเต็มจำนวน'}
                         </span>
                     </div>
-                    <div className="flex justify-between pt-3 border-t border-stone-200 mt-2">
-                        <span className="font-bold text-stone-800 text-base">ยอดที่ต้องชำระทันที:</span>
-                        <span className="font-bold text-emerald-600 text-xl">
+                    <div className="flex justify-between pt-4 border-t border-[#E5EAE5] items-end">
+                        <span className="font-medium text-[#1A2F22] text-sm">ยอดที่ต้องชำระทันที:</span>
+                        <span className="font-sans text-[#4a6b52] text-2xl">
                             ฿{amountToPay.toLocaleString()}
                         </span>
                     </div>
                 </div>
 
                 {error && (
-                    <div className="p-3 bg-red-50 text-red-700 text-sm rounded-xl mb-4 border border-red-200">
+                    <div className="p-4 bg-rose-50 text-rose-700 text-sm rounded-sm mb-6 border border-rose-200 font-light text-center">
                         {error}
                     </div>
                 )}
@@ -82,7 +82,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ booking, onClose, onSuccess
                 <button
                     onClick={handlePayment}
                     disabled={loading}
-                    className="w-full py-3.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-500 shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-[#4a6b52] text-white font-medium rounded-sm hover:bg-[#3b5942] shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2 tracking-wide"
                 >
                     {loading ? (
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
