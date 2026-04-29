@@ -27,7 +27,9 @@ CREATE TABLE IF NOT EXISTS "Room" (
   "capacity" INTEGER,
   "size" INTEGER,
   "amenities" TEXT,
-  "images" TEXT
+  "images" TEXT,
+  "payment_option" VARCHAR(20),
+  "deposit_percentage" INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS "Booking" (

@@ -62,7 +62,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ booking, onClose, onSuccess
                         <span className="font-medium text-[#1A2F22] capitalize">
                             {booking.payment_type === 'deposit'
                                 ? `มัดจำ (${booking.deposit_percentage}%)`
-                                : 'ชำระเต็มจำนวน'}
+                                : booking.payment_type === 'pay_on_arrival'
+                                    ? 'จ่ายเมื่อเข้าพัก'
+                                    : 'ชำระเต็มจำนวน'}
                         </span>
                     </div>
                     <div className="flex justify-between pt-4 border-t border-[#E5EAE5] items-end">

@@ -21,8 +21,12 @@ exports.createBooking = async (req, res) => {
         const configResult = await db.query('SELECT * FROM "System_Config"');
         const config = {};
         for (let row of configResult.rows) config[row.config_key] = row.config_value;
-        const payment_option = config['payment_option'] || 'pay_now';
-        const deposit_percentage = parseFloat(config['deposit_percentage']) || 50;
+
+        // Priority: Room Config > Global Config
+        const payment_option = roomDetails.payment_option || config['payment_option'] || 'pay_now';
+        const deposit_percentage = (roomDetails.deposit_percentage !== null && roomDetails.deposit_percentage !== undefined)
+            ? parseFloat(roomDetails.deposit_percentage)
+            : (parseFloat(config['deposit_percentage']) || 50);
 
         // 2. Format dates and check validity
         const inDate = new Date(check_in);

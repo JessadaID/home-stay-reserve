@@ -79,7 +79,7 @@ exports.getRoomById = async (req, res) => {
 };
 
 exports.createRoom = async (req, res) => {
-    const { name, description, price, capacity, size, amenities } = req.body;
+    const { name, description, price, capacity, size, amenities, payment_option, deposit_percentage } = req.body;
 
     let imagePaths = [];
     if (req.files && req.files.length > 0) {
@@ -94,15 +94,17 @@ exports.createRoom = async (req, res) => {
             parsedAmenities = typeof amenities === 'string' ? amenities : JSON.stringify(amenities);
         }
         const result = await db.query(
-            'INSERT INTO "Room" (name, description, price, capacity, size, amenities, images) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+            'INSERT INTO "Room" (name, description, price, capacity, size, amenities, images, payment_option, deposit_percentage) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
             [
                 name,
                 description,
                 price,
-                capacity || null,
-                size || null,
+                (capacity === '' || capacity === undefined) ? null : capacity,
+                (size === '' || size === undefined) ? null : size,
                 parsedAmenities,
-                JSON.stringify(imagePaths)
+                JSON.stringify(imagePaths),
+                (payment_option === '' || payment_option === undefined) ? null : payment_option,
+                (deposit_percentage === '' || deposit_percentage === undefined) ? null : deposit_percentage
             ]
         );
         const newRoom = result.rows[0];
@@ -119,7 +121,7 @@ exports.createRoom = async (req, res) => {
 
 exports.updateRoom = async (req, res) => {
     const { id } = req.params;
-    const { name, description, price, capacity, size, amenities, existingImages } = req.body;
+    const { name, description, price, capacity, size, amenities, existingImages, payment_option, deposit_percentage } = req.body;
 
     let imagePaths = [];
     if (req.files && req.files.length > 0) {
@@ -145,15 +147,17 @@ exports.updateRoom = async (req, res) => {
         }
 
         const result = await db.query(
-            'UPDATE "Room" SET name = COALESCE($1, name), description = COALESCE($2, description), price = COALESCE($3, price), capacity = COALESCE($4, capacity), size = COALESCE($5, size), amenities = COALESCE($6, amenities), images = COALESCE($7, images) WHERE id = $8 RETURNING *',
+            'UPDATE "Room" SET name = COALESCE($1, name), description = COALESCE($2, description), price = COALESCE($3, price), capacity = $4, size = $5, amenities = COALESCE($6, amenities), images = COALESCE($7, images), payment_option = $8, deposit_percentage = $9 WHERE id = $10 RETURNING *',
             [
                 name,
                 description,
                 price,
-                capacity !== undefined ? capacity : null,
-                size !== undefined ? size : null,
+                (capacity === '' || capacity === undefined) ? null : capacity,
+                (size === '' || size === undefined) ? null : size,
                 parsedAmenities,
                 finalImages,
+                (payment_option === '' || payment_option === undefined) ? null : payment_option,
+                (deposit_percentage === '' || deposit_percentage === undefined) ? null : deposit_percentage,
                 id
             ]
         );

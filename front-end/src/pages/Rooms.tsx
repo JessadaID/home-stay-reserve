@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiUsers, FiMaximize2, FiCheck } from 'react-icons/fi';
+import { FiUsers, FiMaximize2, FiCheck, FiCreditCard } from 'react-icons/fi';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import api from '../api/apiClient';
 import type { Room } from '../types';
@@ -50,7 +50,7 @@ const Rooms = () => {
                     <p className="text-stone-400 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
                         เลือกห้องพักที่เหมาะกับคุณ เพื่อประสบการณ์การพักผ่อนที่ดีที่สุด
                     </p>
-                    <h3 className="text-stone-200 mt-6 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">จำนวนห้องพักทั้งหมด  ห้อง</h3>
+                    <h3 className="text-stone-200 mt-6 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">จำนวนห้องพักทั้งหมด {rooms.length} ห้อง</h3>
                     <hr />
                 </div>
 
@@ -84,6 +84,10 @@ const Rooms = () => {
                                     <div className="flex items-center gap-2">
                                         <FiMaximize2 className="text-[#7bb188]" />
                                         <span>{room.size || '?'} ตร.ม.</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <FiCreditCard className="text-[#7bb188]" />
+                                        <span>{room.payment_option === 'deposit' ? 'ชำระมัดจำ' : room.payment_option === 'pay_on_arrival' ? 'ชำระเมื่อเข้าพัก' : 'ชำระเต็มจำนวน'}</span>
                                     </div>
                                 </div>
 

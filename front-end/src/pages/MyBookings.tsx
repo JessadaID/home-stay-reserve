@@ -101,7 +101,7 @@ const MyBookings = () => {
         <div className="bg-[#F9FAF9] min-h-screen pt-32 pb-16 px-4">
             <div className="max-w-4xl mx-auto">
                 <div className="mb-12 text-center md:text-left">
-                    <h1 className="text-3xl md:text-4xl font-serif text-[#1A2F22] tracking-wide mb-3">การจองของฉัน</h1>
+                    <h1 className="text-3xl md:text-4xl font-sans text-[#1A2F22] tracking-wide mb-3">การจองของฉัน</h1>
                     <p className="text-stone-500 font-light text-base md:text-lg">ตรวจสอบรายละเอียดและประวัติการเข้าพักทั้งหมดของคุณที่นี่</p>
                 </div>
 
@@ -110,7 +110,7 @@ const MyBookings = () => {
                         <div className="w-20 h-20 bg-[#F4F7F4] rounded-full flex items-center justify-center mx-auto mb-6">
                             <FiCalendar className="text-[#4a6b52] text-3xl" />
                         </div>
-                        <h3 className="text-xl font-serif text-[#1A2F22] mb-2">ยังไม่มีประวัติการจอง</h3>
+                        <h3 className="text-xl font-sans text-[#1A2F22] mb-2">ยังไม่มีประวัติการจอง</h3>
                         <p className="text-stone-500 mb-8 max-w-sm mx-auto font-light">
                             คุณยังไม่มีรายการเข้าพักในระบบของเรา เริ่มต้นค้นหาห้องพักที่ถูกใจได้เลย
                         </p>
@@ -142,9 +142,9 @@ const MyBookings = () => {
                                         </div>
                                         {booking.payment_status && (
                                             <div className={`absolute bottom-3 right-3 px-3 py-1 rounded-sm text-xs font-medium shadow-sm backdrop-blur-md 
-                                                ${booking.payment_status === 'pending' ? 'bg-rose-500/90 text-white' :
+                                                ${booking.payment_status === 'pending' ? (booking.payment_type === 'pay_on_arrival' ? 'bg-[#4a6b52]/90 text-white' : 'bg-rose-500/90 text-white') :
                                                     booking.payment_status === 'deposit_paid' ? 'bg-[#b68d40]/90 text-white' : 'bg-[#4a6b52]/90 text-white'}`}>
-                                                {booking.payment_status === 'pending' ? 'รอการชำระเงิน' :
+                                                {booking.payment_status === 'pending' ? (booking.payment_type === 'pay_on_arrival' ? 'จ่ายเมื่อเข้าพัก' : 'รอการชำระเงิน') :
                                                     booking.payment_status === 'deposit_paid' ? 'ชำระมัดจำแล้ว' : 'ชำระเงินครบแล้ว'}
                                             </div>
                                         )}
@@ -194,7 +194,7 @@ const MyBookings = () => {
                                         <div className="mt-auto">
                                             {upcoming ? (
                                                 <div className="flex flex-wrap gap-3">
-                                                    {booking.payment_status === 'pending' && (
+                                                    {booking.payment_status === 'pending' && booking.payment_type !== 'pay_on_arrival' && (
                                                         <button
                                                             onClick={() => setPaymentModalBooking(booking)}
                                                             className="flex items-center gap-2 px-5 py-2.5 rounded-sm text-sm font-medium text-white bg-[#4a6b52] hover:bg-[#3b5942] shadow-sm transition-all tracking-wide"

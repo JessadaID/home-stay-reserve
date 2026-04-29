@@ -14,6 +14,8 @@ export interface RoomData {
     size?: number;
     amenities?: string[];
     images?: string[];
+    payment_option?: string;
+    deposit_percentage?: number;
 }
 
 export interface Room {
@@ -25,6 +27,8 @@ export interface Room {
     size?: number;
     amenities?: string[];
     images?: string[];
+    payment_option?: string;
+    deposit_percentage?: number;
 }
 
 export interface Booking {

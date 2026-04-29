@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiCheck, FiCalendar, FiUser } from 'react-icons/fi';
+import { FiArrowLeft, FiCheck, FiCalendar } from 'react-icons/fi';
 import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
 import DatePicker from 'react-datepicker';
@@ -110,9 +110,13 @@ const RoomDetails = () => {
                 check_out: checkOut,
             });
 
-            setSubmitMessage({ type: 'success', text: 'สร้างการจองสำเร็จ! กรุณาชำระเงินเพื่อยืนยันการจอง' });
+            if (res.data.payment_type === 'pay_on_arrival') {
+                setSubmitMessage({ type: 'success', text: 'สร้างการจองสำเร็จ! คุณสามารถชำระเงินเมื่อเข้าพักได้เลย' });
+            } else {
+                setSubmitMessage({ type: 'success', text: 'สร้างการจองสำเร็จ! กรุณาชำระเงินเพื่อยืนยันการจอง' });
+                setShowPaymentModal(true);
+            }
             setCreatedBooking(res.data);
-            setShowPaymentModal(true);
 
             const bookingsRes = await api.get(`${API_URL}/api/bookings/rooms/${id}`);
             setBookings(bookingsRes.data);
@@ -153,6 +157,11 @@ const RoomDetails = () => {
     const amenities = room.amenities && room.amenities.length > 0
         ? room.amenities
         : ['เครื่องปรับอากาศ', 'ตู้เย็น', 'เครื่องทำน้ำอุ่น', 'Wi-Fi ฟรี'];
+
+    const effectivePaymentOption = room.payment_option || config?.payment_option;
+    const effectiveDepositPercentage = (room.deposit_percentage !== null && room.deposit_percentage !== undefined)
+        ? room.deposit_percentage
+        : (config?.deposit_percentage || 50);
 
     return (
         <div className="bg-[#0B1D12] text-stone-200 min-h-screen py-16 px-4 sm:px-8 lg:px-12 font-sans pt-32">
@@ -309,9 +318,11 @@ const RoomDetails = () => {
                                 <div className="flex justify-between text-stone-400 pb-6 border-b border-[#2b3a2e] font-light">
                                     <span>รูปแบบการชำระเงิน</span>
                                     <span className="font-medium capitalize text-stone-200">
-                                        {config?.payment_option === 'deposit'
-                                            ? `มัดจำ (${config?.deposit_percentage || 50}%)`
-                                            : 'ชำระเต็มจำนวน'
+                                        {effectivePaymentOption === 'deposit'
+                                            ? `มัดจำ (${effectiveDepositPercentage}%)`
+                                            : effectivePaymentOption === 'pay_on_arrival'
+                                                ? 'จ่ายเมื่อเข้าพัก'
+                                                : 'ชำระเต็มจำนวน'
                                         }
                                     </span>
                                 </div>
@@ -319,10 +330,10 @@ const RoomDetails = () => {
                                     <span>Total</span>
                                     <span className="text-white font-medium">฿{calculateTotalAmount().toLocaleString()}</span>
                                 </div>
-                                {config?.payment_option === 'deposit' && (
+                                {effectivePaymentOption === 'deposit' && (
                                     <div className="flex justify-between text-stone-400 text-sm mt-2 font-light">
                                         <span>ยอดที่ต้องชำระทันที</span>
-                                        <span className="text-[#c27b4b] font-medium">฿{(calculateTotalAmount() * (config?.deposit_percentage || 50) / 100).toLocaleString()}</span>
+                                        <span className="text-[#c27b4b] font-medium">฿{(calculateTotalAmount() * (effectiveDepositPercentage) / 100).toLocaleString()}</span>
                                     </div>
                                 )}
                             </div>

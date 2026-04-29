@@ -16,7 +16,9 @@ const AdminRoomForm = () => {
         price: '',
         capacity: '',
         size: '',
-        amenities: ''
+        amenities: '',
+        payment_option: '', // Empty string means use global
+        deposit_percentage: ''
     });
 
     // For managing images
@@ -44,7 +46,9 @@ const AdminRoomForm = () => {
                         price: res.data.price,
                         capacity: res.data.capacity?.toString() || '',
                         size: res.data.size?.toString() || '',
-                        amenities: Array.isArray(res.data.amenities) ? res.data.amenities.join(', ') : ''
+                        amenities: Array.isArray(res.data.amenities) ? res.data.amenities.join(', ') : '',
+                        payment_option: res.data.payment_option || '',
+                        deposit_percentage: res.data.deposit_percentage?.toString() || ''
                     });
                     setImages(res.data.images || []);
                 } catch (err) {
@@ -72,6 +76,19 @@ const AdminRoomForm = () => {
             formDataToSend.append('price', formData.price);
             if (formData.capacity) formDataToSend.append('capacity', formData.capacity);
             if (formData.size) formDataToSend.append('size', formData.size);
+            
+            // Payment config
+            if (formData.payment_option) {
+                formDataToSend.append('payment_option', formData.payment_option);
+                if (formData.payment_option === 'deposit' && formData.deposit_percentage) {
+                    formDataToSend.append('deposit_percentage', formData.deposit_percentage);
+                } else {
+                    formDataToSend.append('deposit_percentage', ''); // Reset if not deposit
+                }
+            } else {
+                formDataToSend.append('payment_option', ''); // Empty to use global
+                formDataToSend.append('deposit_percentage', '');
+            }
 
             const amenitiesArray = formData.amenities.split(',').map(a => a.trim()).filter(a => a);
             formDataToSend.append('amenities', JSON.stringify(amenitiesArray));
@@ -206,7 +223,6 @@ const AdminRoomForm = () => {
                                         placeholder="AC, Smart TV, Fridge, Free Wi-Fi"
                                     ></textarea>
                                 </div>
-
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
                                     <textarea
@@ -216,6 +232,39 @@ const AdminRoomForm = () => {
                                         className="w-full px-3 py-2 text-sm rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none placeholder:text-slate-400"
                                         placeholder="Room details..."
                                     ></textarea>
+                                </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-slate-100">
+                                <h3 className="text-sm font-semibold text-slate-800 mb-4">Payment Configuration</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Payment Option</label>
+                                        <select
+                                            value={formData.payment_option}
+                                            onChange={(e) => setFormData({ ...formData, payment_option: e.target.value })}
+                                            className="w-full px-3 py-2 text-sm rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                                        >
+                                            <option value="">ใช้ค่าเริ่มต้นของระบบ (Global Config)</option>
+                                            <option value="pay_now">ชำระเต็มจำนวน (Full Payment)</option>
+                                            <option value="deposit">มัดจำ (Deposit)</option>
+                                            <option value="pay_on_arrival">จ่ายเมื่อเข้าพัก (Pay on Arrival)</option>
+                                        </select>
+                                    </div>
+                                    {formData.payment_option === 'deposit' && (
+                                        <div>
+                                            <label className="block text-sm font-medium text-slate-700 mb-1">Deposit Percentage (%)</label>
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                max="100"
+                                                value={formData.deposit_percentage}
+                                                onChange={(e) => setFormData({ ...formData, deposit_percentage: e.target.value })}
+                                                className="w-full px-3 py-2 text-sm rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                                                placeholder="50"
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
