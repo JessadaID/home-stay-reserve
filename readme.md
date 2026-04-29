@@ -14,7 +14,7 @@
 
 ![Homepage Showcase](./image/home.png)
 > *คลิปการใช้งานหน้าแรกและระบบค้นหา*
-<video src="./video/Homepage.mp4" width="100%" controls></video>
+<video src="https://github.com/user-attachments/assets/fc5cc73c-9a73-47ab-9fb5-b565384ae7cb" width="100%" controls></video>
 
 ---
 
@@ -23,14 +23,14 @@
 
 | รายการห้องพัก (Room Listing) | รายละเอียดห้องพัก (Room Details) |
 | :---: | :---: |
-| <video src="./video/rooms.mp4" width="100%" controls></video> | <video src="./video/roomDetail.mp4" width="100%" controls></video> |
+| <video src="https://github.com/user-attachments/assets/25df8125-483d-4bd7-a6c9-6866b00d5505" width="100%" controls></video> | <video src="https://github.com/user-attachments/assets/a93868da-bc5a-4019-b391-f34f5105c6d8" width="100%" controls></video> |
 
 ---
 
 ### 3. ระบบการจองที่ชาญฉลาด (Seamless Booking)
 ขั้นตอนการจองที่เข้าใจง่าย ป้องกันการจองซ้ำซ้อน (Overlap Prevention) และระบบจัดการสถานะการชำระเงิน
 
-<video src="./video/use-web-site.mp4" width="100%" controls></video>
+<video src="https://github.com/user-attachments/assets/2b7a9c2c-ab28-4f5c-b6b5-b6a79828bc0d" width="100%" controls></video>
 
 ---
 
@@ -68,7 +68,3 @@
 2.  **Frontend**: `cd front-end && npm install && npm run dev`
 *(ดูรายละเอียดการตั้งค่าฐานข้อมูลในโฟลเดอร์ config)*
 
----
-
-> [!TIP]
-> โปรเจกต์นี้มุ่งเน้นที่การสร้าง **User Experience** ที่ดีที่สุด และระบบที่ขยายตัวได้ (Scalable) เพื่อรองรับการจองที่พักจริง
