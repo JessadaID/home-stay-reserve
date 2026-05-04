@@ -1,0 +1,35 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Room {
+  id                 Int      @id @default(autoincrement())
+  name               String   @db.VarChar(255)
+  description        String?  @db.Text
+  price              Decimal  @db.Decimal(10, 2)
+  capacity           Int?
+  size               Int?
+  amenities          String?  @db.Text
+  images             String?  @db.Text
+  payment_option     String?  @db.VarChar(20)
+  deposit_percentage Int?
+}
+
+model Holiday {
+  id           Int      @id @default(autoincrement())
+  holiday_date DateTime @db.Date
+  description  String?  @db.VarChar(255)
+}
+
+model System_Config {
+  id           Int    @id @default(autoincrement())
+  config_key   String @unique @db.VarChar(255)
+  config_value String @db.VarChar(255)
+}

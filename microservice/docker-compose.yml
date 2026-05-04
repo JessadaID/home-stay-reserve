@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # --- Infrastructure ---
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  # Database สำหรับ Auth
+  auth-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: jessada
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: auth_db
+    ports:
+      - "5431:5432"
+
+  # # Database สำหรับ Room (ข้อมูลที่พัก)
+  # room-db:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_USER: user_room
+  #     POSTGRES_PASSWORD: password_room
+  #     POSTGRES_DB: room_db
+  #   ports:
+  #     - "5432:5432"
+
+  # # Database สำหรับ Booking (ข้อมูลการจอง)
+  # booking-db:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_USER: user_booking
+  #     POSTGRES_PASSWORD: password_booking
+  #     POSTGRES_DB: booking_db
+  #   ports:
+  #     - "5433:5432"
+
+  # --- Services ---
+  auth-service:
+    build: ./auth_service
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgres://jessada:1234@auth-db:5431/auth_db
+    depends_on:
+      - auth-db
+
+  # room-service:
+  #   build: ./room_service
+  #   ports:
+  #     - "3002:3002"
+  #   environment:
+  #     - DATABASE_URL=postgres://user_room:password_room@room-db:5432/room_db
+  #     - REDIS_URL=redis://redis:6379
+  #   depends_on:
+  #     - room-db
+  #     - redis
+
+  # booking-service:
+  #   build: ./booking_service
+  #   ports:
+  #     - "3003:3003"
+  #   environment:
+  #     - DATABASE_URL=postgres://user_booking:password_booking@booking-db:5432/booking_db
+  #     - ROOM_SERVICE_URL=http://room-service:3002
+  #     - REDIS_URL=redis://redis:6379
+  #   depends_on:
+  #     - booking-db
+  #     - redis
