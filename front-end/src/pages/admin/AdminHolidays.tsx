@@ -8,7 +8,9 @@ import type { Holiday } from '../../types';
 const AdminHolidays = () => {
     const { user, isAuthenticated } = useContext(AuthContext);
     const navigate = useNavigate();
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+    const ROOM_SERVICE_URL = import.meta.env.VITE_ROOM_SERVICE_URL || ""
+
     const [holidays, setHolidays] = useState<Holiday[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -19,7 +21,7 @@ const AdminHolidays = () => {
     const fetchHolidays = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`${API_URL}/api/holidays`);
+            const res = await api.get(`${ROOM_SERVICE_URL}/api/holidays`);
             setHolidays(res.data);
         } catch (error) {
             console.error("Error fetching holidays", error);
@@ -34,7 +36,7 @@ const AdminHolidays = () => {
             return;
         }
         fetchHolidays();
-    }, [isAuthenticated, user, navigate, API_URL]);
+    }, [isAuthenticated, user, navigate, ROOM_SERVICE_URL]);
 
     const handleAddHoliday = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,7 +44,7 @@ const AdminHolidays = () => {
 
         setAdding(true);
         try {
-            await api.post(`${API_URL}/api/holidays`, {
+            await api.post(`${ROOM_SERVICE_URL}/api/holidays`, {
                 holiday_date: date,
                 description
             });
@@ -59,7 +61,7 @@ const AdminHolidays = () => {
     const handleDelete = async (id: number) => {
         if (!window.confirm('คุณต้องการยกเลิกวันหยุดนี้ใช่หรือไม่?')) return;
         try {
-            await api.delete(`${API_URL}/api/holidays/${id}`);
+            await api.delete(`${ROOM_SERVICE_URL}/api/holidays/${id}`);
             fetchHolidays();
         } catch (error) {
             alert('ลบวันหยุดล้มเหลว');

@@ -191,3 +191,23 @@ exports.updateBooking = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+exports.getUnavailableRooms = async (req, res) => {
+    const { checkin, checkout } = req.query;
+    if (!checkin || !checkout) {
+        return res.status(400).json({ message: 'checkin and checkout are required' });
+    }
+
+    try {
+        const query = `
+            SELECT DISTINCT room_id FROM "Booking"
+            WHERE check_in < $1 AND check_out > $2
+        `;
+        const result = await db.query(query, [checkout, checkin]);
+        const roomIds = result.rows.map(row => row.room_id);
+        res.json(roomIds);
+    } catch (error) {
+        console.error('Error fetching unavailable rooms:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};

@@ -9,6 +9,7 @@ const AdminRoomForm = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
+    const ROOM_SERVICE_URL = import.meta.env.VITE_ROOM_SERVICE_URL || '';
 
     const [formData, setFormData] = useState({
         name: '',
@@ -39,7 +40,7 @@ const AdminRoomForm = () => {
         if (isEditMode) {
             const fetchRoomDetails = async () => {
                 try {
-                    const res = await api.get(`api/rooms/${id}`);
+                    const res = await api.get(`${ROOM_SERVICE_URL}/api/rooms/${id}`);
                     setFormData({
                         name: res.data.name,
                         description: res.data.description || '',
@@ -76,7 +77,7 @@ const AdminRoomForm = () => {
             formDataToSend.append('price', formData.price);
             if (formData.capacity) formDataToSend.append('capacity', formData.capacity);
             if (formData.size) formDataToSend.append('size', formData.size);
-            
+
             // Payment config
             if (formData.payment_option) {
                 formDataToSend.append('payment_option', formData.payment_option);
@@ -102,13 +103,13 @@ const AdminRoomForm = () => {
             }
 
             if (isEditMode) {
-                await api.put(`api/rooms/${id}`, formDataToSend, {
+                await api.put(`${ROOM_SERVICE_URL}/api/rooms/${id}`, formDataToSend, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 alert('อัปเดตห้องพักเรียบร้อย');
                 navigate(`/admin/rooms`);
             } else {
-                await api.post(`api/rooms`, formDataToSend, {
+                await api.post(`${ROOM_SERVICE_URL}/api/rooms`, formDataToSend, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 alert('เพิ่มห้องพักเรียบร้อย');
@@ -317,7 +318,7 @@ const AdminRoomForm = () => {
                                 <div className="space-y-3">
                                     {images.map((url, index) => (
                                         <div key={index} className="relative group rounded overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
-                                            <img src={url.startsWith('/') ? `http://localhost:3000${url}` : url} alt={`Room image ${index + 1}`} className="w-full h-24 object-cover" />
+                                            <img src={url.startsWith('http') ? url : `${ROOM_SERVICE_URL}${url}`} alt={`Room image ${index + 1}`} className="w-full h-24 object-cover" />
                                             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 pt-6">
                                                 <p className="text-white text-[10px] truncate">Image {index + 1}</p>
                                             </div>

@@ -6,7 +6,7 @@ import api from '../../api/apiClient';
 import type { Booking } from '../../types';
 
 const AdminBookings = () => {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const BOOKING_SERVICE_URL = import.meta.env.VITE_BOOKING_SERVICE_URL || '';
     const { user, isAuthenticated } = useContext(AuthContext);
     const navigate = useNavigate();
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -25,7 +25,7 @@ const AdminBookings = () => {
     const fetchBookings = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`${API_URL}/api/bookings`);
+            const res = await api.get(`${BOOKING_SERVICE_URL}/api/bookings`);
             setBookings(res.data);
         } catch (error) {
             console.error('Error fetching bookings:', error);
@@ -41,7 +41,7 @@ const AdminBookings = () => {
 
     const handleSave = async (id: number) => {
         try {
-            await api.put(`${API_URL}/api/bookings/${id}`, { payment_status: editStatus });
+            await api.put(`${BOOKING_SERVICE_URL}/api/bookings/${id}`, { payment_status: editStatus });
             setEditingId(null);
             fetchBookings();
         } catch (error: any) {
@@ -52,7 +52,7 @@ const AdminBookings = () => {
     const handleDelete = async (id: number) => {
         if (!window.confirm('ยืนยันการลบการจองนี้?')) return;
         try {
-            await api.delete(`${API_URL}/api/bookings/${id}`);
+            await api.delete(`${BOOKING_SERVICE_URL}/api/bookings/${id}`);
             fetchBookings();
         } catch (error: any) {
             alert(error.response?.data?.message || 'Error deleting booking');

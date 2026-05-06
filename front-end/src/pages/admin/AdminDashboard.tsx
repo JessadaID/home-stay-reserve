@@ -5,7 +5,7 @@ import { FiUsers, FiCalendar, FiDollarSign, FiGrid, FiList } from 'react-icons/f
 import api from '../../api/apiClient';
 
 const AdminDashboard = () => {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const BOOKING_SERVICE_URL = import.meta.env.VITE_BOOKING_SERVICE_URL || ""
     const { user, isAuthenticated } = useContext(AuthContext);
     const navigate = useNavigate();
     const [stats, setStats] = useState({
@@ -24,7 +24,7 @@ const AdminDashboard = () => {
         const fetchDashboardData = async () => {
             try {
                 const [bookingsRes] = await Promise.all([
-                    api.get(`${API_URL}/api/bookings`)
+                    api.get(`${BOOKING_SERVICE_URL}/api/bookings`)
                 ]);
 
                 const bookings = bookingsRes.data;
@@ -51,7 +51,7 @@ const AdminDashboard = () => {
         };
 
         fetchDashboardData();
-    }, [isAuthenticated, user, navigate, API_URL]);
+    }, [isAuthenticated, user, navigate, BOOKING_SERVICE_URL]);
 
     if (!user || user.role !== 'admin') {
         return null;

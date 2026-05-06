@@ -8,7 +8,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ booking, onClose, onSuccess
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const API_URL = import.meta.env.VITE_BOOKING_SERVICE_URL || '';
     const totalPrice = Number(booking.total_price);
     const amountToPay = booking.payment_type === 'deposit' && booking.deposit_percentage
         ? (totalPrice * booking.deposit_percentage) / 100

@@ -11,7 +11,8 @@ import PaymentModal from '../components/PaymentModal';
 import type { RoomData, Booking, Holiday } from '../types';
 
 const RoomDetails = () => {
-    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
+    const ROOM_SERVICE_URL = import.meta.env.VITE_ROOM_SERVICE_URL || ""
+    const BOOKING_SERVICE_URL = import.meta.env.VITE_BOOKING_SERVICE_URL || ""
     const { id } = useParams();
     const navigate = useNavigate();
     const { user, isAuthenticated } = useContext(AuthContext);
@@ -33,10 +34,10 @@ const RoomDetails = () => {
         const fetchData = async () => {
             try {
                 const [roomRes, bookingsRes, configRes, holidaysRes] = await Promise.all([
-                    api.get(`${API_URL}/api/rooms/${id}`),
-                    api.get(`${API_URL}/api/bookings/rooms/${id}`),
-                    api.get(`${API_URL}/api/config`),
-                    api.get(`${API_URL}/api/holidays`)
+                    api.get(`${ROOM_SERVICE_URL}/api/rooms/${id}`),
+                    api.get(`${BOOKING_SERVICE_URL}/api/bookings/rooms/${id}`),
+                    api.get(`${ROOM_SERVICE_URL}/api/config`),
+                    api.get(`${ROOM_SERVICE_URL}/api/holidays`)
                 ]);
                 setRoom(roomRes.data);
                 setBookings(bookingsRes.data);
@@ -103,7 +104,7 @@ const RoomDetails = () => {
             const checkIn = new Date(startDate.getTime() - (startDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
             const checkOut = new Date(endDate.getTime() - (endDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 
-            const res = await api.post(`${API_URL}/api/bookings`, {
+            const res = await api.post(`${BOOKING_SERVICE_URL}/api/bookings`, {
                 room_id: room.id,
                 customer_name: user?.username || 'Customer',
                 check_in: checkIn,
@@ -118,7 +119,7 @@ const RoomDetails = () => {
             }
             setCreatedBooking(res.data);
 
-            const bookingsRes = await api.get(`${API_URL}/api/bookings/rooms/${id}`);
+            const bookingsRes = await api.get(`${BOOKING_SERVICE_URL}/api/bookings/rooms/${id}`);
             setBookings(bookingsRes.data);
 
             setStartDate(null);
@@ -178,7 +179,7 @@ const RoomDetails = () => {
                             {room.images && room.images.length > 0 ? (
                                 <>
                                     <div className="md:col-span-4 h-[300px] md:h-[450px] relative group overflow-hidden border border-[#2b3a2e]">
-                                        <img src={`${API_URL}${room.images[0]}`} alt="Main view" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                        <img src={`${ROOM_SERVICE_URL}${room.images[0]}`} alt="Main view" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                     </div>
                                     {room.images.slice(1, 5).map((img, index) => {
                                         const isLastSlot = index === 3;
@@ -187,7 +188,7 @@ const RoomDetails = () => {
 
                                         return (
                                             <div key={index} className="hidden md:block h-[120px] relative group border border-[#2b3a2e] bg-[#0a0f0d] overflow-hidden">
-                                                <img src={`${API_URL}${img}`} alt={`Side view ${index + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                <img src={`${ROOM_SERVICE_URL}${img}`} alt={`Side view ${index + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                                 {showOverlay && (
                                                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center group-hover:bg-black/50 transition-colors duration-500">
                                                         <span className="text-white text-2xl font-medium tracking-wider">+{remainingCount}</span>

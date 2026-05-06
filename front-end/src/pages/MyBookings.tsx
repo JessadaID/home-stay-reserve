@@ -12,7 +12,8 @@ const MyBookings = () => {
     const [loading, setLoading] = useState(true);
     const [cancellingId, setCancellingId] = useState<number | null>(null);
     const [paymentModalBooking, setPaymentModalBooking] = useState<Booking | null>(null);
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const BOOKING_SERVICE_URL = import.meta.env.VITE_BOOKING_SERVICE_URL || '';
+    const ROOM_SERVICE_URL = import.meta.env.VITE_ROOM_SERVICE_URL || ""
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -21,7 +22,7 @@ const MyBookings = () => {
                 return;
             }
             try {
-                const response = await api.get(`${API_URL}/api/bookings/me`);
+                const response = await api.get(`${BOOKING_SERVICE_URL}/api/bookings/me`);
                 setBookings(response.data);
             } catch (error) {
                 console.error("Error fetching my bookings:", error);
@@ -35,7 +36,7 @@ const MyBookings = () => {
 
     const refreshBookings = async () => {
         try {
-            const response = await api.get(`${API_URL}/api/bookings/me`);
+            const response = await api.get(`${BOOKING_SERVICE_URL}/api/bookings/me`);
             setBookings(response.data);
         } catch (error) {
             console.error("Error refreshing bookings:", error);
@@ -46,7 +47,7 @@ const MyBookings = () => {
         if (!window.confirm('ต้องการยกเลิกการจองนี้ใช่หรือไม่?')) return;
         setCancellingId(bookingId);
         try {
-            await api.delete(`${API_URL}/api/bookings/${bookingId}`);
+            await api.delete(`${BOOKING_SERVICE_URL}/api/bookings/${bookingId}`);
             setBookings((prev) => prev.filter((b) => b.id !== bookingId));
         } catch (error) {
             console.error('Error cancelling booking:', error);
@@ -130,7 +131,7 @@ const MyBookings = () => {
                                     {/* Thumbnail */}
                                     <div className="w-full md:w-56 h-56 md:h-auto bg-stone-100 rounded-sm overflow-hidden shrink-0 relative">
                                         {booking.room_image ? (
-                                            <img src={`${API_URL}${booking.room_image}`} alt={booking.room_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                            <img src={`${ROOM_SERVICE_URL}${booking.room_image}`} alt={booking.room_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-stone-400 flex-col gap-2">
                                                 <FiHome size={24} />
