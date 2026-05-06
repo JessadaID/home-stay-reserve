@@ -11,6 +11,7 @@ const AdminLogin = () => {
 
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
+    const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || '';
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -18,7 +19,7 @@ const AdminLogin = () => {
         setIsLoading(true);
 
         try {
-            const response = await api.post('/auth/admin/login', {
+            const response = await api.post(`${AUTH_SERVICE_URL}/auth/admin/login`, {
                 email,
                 password,
             });

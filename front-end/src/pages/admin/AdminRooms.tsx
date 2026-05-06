@@ -9,6 +9,7 @@ const AdminRooms = () => {
     const navigate = useNavigate();
     const [rooms, setRooms] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const ROOM_SERVICE_URL = import.meta.env.VITE_ROOM_SERVICE_URL || '';
 
 
     useEffect(() => {
@@ -20,7 +21,7 @@ const AdminRooms = () => {
         const fetchRooms = async () => {
             setLoading(true);
             try {
-                const res = await api.get('api/rooms');
+                const res = await api.get(`${ROOM_SERVICE_URL}/api/rooms`);
                 setRooms(res.data);
             } catch (error) {
                 console.error("Error fetching rooms", error);
@@ -38,7 +39,7 @@ const AdminRooms = () => {
         }
 
         try {
-            await api.delete(`api/rooms/${roomId}`);
+            await api.delete(`${ROOM_SERVICE_URL}/api/rooms/${roomId}`);
             setRooms(rooms.filter(r => r.id !== roomId));
             alert('ลบห้องพักเรียบร้อยแล้ว');
         } catch (error: any) {
@@ -87,7 +88,7 @@ const AdminRooms = () => {
                                 <div key={room.id} className="bg-white rounded shadow-sm border border-slate-200 overflow-hidden flex flex-col">
                                     <div className="h-40 bg-slate-200 relative border-b border-slate-200">
                                         {room.images && room.images.length > 0 ? (
-                                            <img src={`${import.meta.env.VITE_API_URL}${room.images[0]}`} alt={room.name} className="w-full h-full object-cover" />
+                                            <img src={`${ROOM_SERVICE_URL}${room.images[0]}`} alt={room.name} className="w-full h-full object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-slate-400 text-sm">
                                                 No Image

@@ -11,7 +11,7 @@ const Rooms = () => {
     const capacity = searchparamshook.get('capacity') || null;
     const [rooms, setRooms] = useState<Room[]>([]);
     const [loading, setLoading] = useState(true);
-    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
+    const API_URL = import.meta.env.VITE_ROOM_SERVICE_URL || ""
     const navigate = useNavigate();
 
     useEffect(() => {

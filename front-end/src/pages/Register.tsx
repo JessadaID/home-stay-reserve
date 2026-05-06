@@ -11,6 +11,7 @@ const Register = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
+    const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || '';
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,7 +25,7 @@ const Register = () => {
         setIsLoading(true);
 
         try {
-            await api.post('/auth/customer/register', {
+            await api.post(`${AUTH_SERVICE_URL}/auth/customer/register`, {
                 username,
                 email,
                 password,

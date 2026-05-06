@@ -12,6 +12,9 @@ router.get('/me', authMiddleware(['customer', 'admin']), bookingController.getMy
 // Get bookings by room id (public/useful for frontend calendar)
 router.get('/rooms/:roomId', bookingController.getBookingsByRoom);
 
+// Get unavailable room IDs for a date range
+router.get('/unavailable-rooms', bookingController.getUnavailableRooms);
+
 // Customer / Admin - Create booking
 router.post('/', authMiddleware(['customer', 'admin']), bookingController.createBooking);
 

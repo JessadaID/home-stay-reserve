@@ -1,0 +1,39 @@
+# [Build Artifacts]
+[Bb]in/
+[Oo]bj/
+out/
+publish/
+
+# [Code Analysis/Testing]
+TestResults/
+*.VisualState.xml
+
+# [User-specific files]
+*.user
+*.userosscache
+*.sln.docstates
+
+# [Visual Studio Cache/Settings]
+.vs/
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sublime-project
+*.sublime-workspace
+
+# [Secrets & Configs]
+appsettings.json
+!appsettings.json
+appsettings.Development.json
+
+# [OS generated files]
+.DS_Store
+Thumbs.db
+
+# [NuGet Packages]
+*.nupkg
+**/packages/*
+!**/packages/build/

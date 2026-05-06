@@ -15,6 +15,6 @@ app.get('/', (req, res) => {
 
 app.use('/auth', authRoutes);
 
-app.listen(3001, () => {
-    console.log('Auth Service is running on port 3001');
+app.listen(3000, () => {
+    console.log('Auth Service is running on port 3000');
 });

@@ -6,12 +6,12 @@ const Room = () => {
     const [rooms, setRooms] = useState<RoomType[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const API_URL = import.meta.env.VITE_ROOM_SERVICE_URL || '';
     const navigate = useNavigate();
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const response = await api.get("/api/rooms?limit=3");
+                const response = await api.get(`${API_URL}/api/rooms?limit=3`);
                 setRooms(response.data);
             } catch (error) {
                 setError("Failed to fetch rooms");
