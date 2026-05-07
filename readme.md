@@ -62,6 +62,21 @@
 
 ---
 
+## การเชื่อมต่อระบบ Microservices (JWT Authentication)
+
+ได้มีการอัปเดตระบบการยืนยันตัวตนระหว่าง Microservices เพื่อให้ทำงานร่วมกันได้อย่างสมบูรณ์:
+
+*   **Auth Service (Node.js)**:
+    - เพิ่มการตั้งค่า `JWT_ISSUER` และ `JWT_AUDIENCE` เพื่อให้ Token เป็นไปตามมาตรฐาน
+    - ปรับปรุงระบบการ Sign Token ให้รวม Claim ข้อมูล Issuer และ Audience
+*   **Room Service (.NET 8)**:
+    - ติดตั้งและตั้งค่า `Microsoft.AspNetCore.Authentication.JwtBearer`
+    - กำหนดค่า `JwtSettings` ใน `appsettings.json` ให้ตรงกับระบบ Auth
+    - ตั้งค่าการแมพ Claim เพื่อให้อ่านค่า `username` และ `role` จาก Token ของ Node.js ได้โดยตรง
+    - เปิดใช้งานการตรวจสอบสิทธิ์ผ่าน Attribute `[Authorize(Roles = "admin")]` ใน Controller ต่างๆ
+
+---
+
 ## เริ่มต้นใช้งาน
 
 1.  **Backend**: `cd back-end && npm install && npm run dev`
