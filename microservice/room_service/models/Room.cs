@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace room_service.models;
 
@@ -14,4 +15,7 @@ public class Room
     public List<string> Images { get; set; } = new List<string>();
     public string Payment_option { get; set; } = string.Empty;
     public int Deposit_percentage { get; set; }
+
+    // Soft delete: null = active, datetime = deleted
+    public DateTime? Deleted_at { get; set; } = null;
 }
