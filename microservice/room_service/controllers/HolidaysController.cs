@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using room_service.data;
 using room_service.models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+// using System.Collections.Generic;
+// using System.Linq;
+// using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace room_service.Controllers;
 
@@ -30,6 +31,7 @@ public class HolidaysController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> AddHoliday([FromBody] Holiday holiday)
     {
         if (holiday.Holiday_date == default)
@@ -53,6 +55,7 @@ public class HolidaysController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteHoliday(int id)
     {
         var holiday = await _context.Holidays.FindAsync(id);
