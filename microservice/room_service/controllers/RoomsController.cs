@@ -34,8 +34,8 @@ public class RoomsController : ControllerBase
         [FromQuery] DateTime? checkin = null,
         [FromQuery] DateTime? checkout = null)
     {
-        // Start building the query
-        var query = _context.Rooms.AsQueryable();
+        // Start building the query, exclude soft-deleted rooms
+        var query = _context.Rooms.Where(r => r.Deleted_at == null).AsQueryable();
 
         // Filter by capacity
         if (capacity > 0)
@@ -82,7 +82,10 @@ public class RoomsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetRoom(int id)
     {
-        var room = await _context.Rooms.FindAsync(id);
+        // Find room that is not soft-deleted
+        var room = await _context.Rooms
+            .Where(r => r.Id == id && r.Deleted_at == null)
+            .FirstOrDefaultAsync();
         if (room == null)
         {
             return NotFound(new {
@@ -198,7 +201,10 @@ public class RoomsController : ControllerBase
     [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteRoom(int id)
     {
-        var room = await _context.Rooms.FindAsync(id);
+        // Find room that is not already soft-deleted
+        var room = await _context.Rooms
+            .Where(r => r.Id == id && r.Deleted_at == null)
+            .FirstOrDefaultAsync();
         if (room == null)
         {
             return NotFound(new {
@@ -206,7 +212,9 @@ public class RoomsController : ControllerBase
             });
         }
 
-        _context.Rooms.Remove(room);
+        // Soft delete: set deleted_at timestamp instead of removing the record
+        room.Deleted_at = DateTime.UtcNow;
+        _context.Entry(room).State = EntityState.Modified;
         await _context.SaveChangesAsync();
 
         return NoContent();
@@ -214,7 +222,8 @@ public class RoomsController : ControllerBase
 
     private bool RoomExists(int id)
     {
-        return _context.Rooms.Any(e => e.Id == id);
+        // Check existence excluding soft-deleted rooms
+        return _context.Rooms.Any(e => e.Id == id && e.Deleted_at == null);
     }
 
     private async Task<List<string>> ProcessUploadedImagesAsync(List<IFormFile>? images)
