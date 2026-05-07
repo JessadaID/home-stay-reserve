@@ -5,6 +5,7 @@ using System.IO;
 using room_service.models;
 using room_service.data;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace room_service.Controllers;
 
@@ -59,14 +60,12 @@ public class RoomsController : ControllerBase
                     var bookedRoomIds = await response.Content.ReadFromJsonAsync<List<int>>();
                     if (bookedRoomIds != null && bookedRoomIds.Count > 0)
                     {
-                        // Exclude rooms that are already booked
                         query = query.Where(r => !bookedRoomIds.Contains(r.Id));
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Log error and continue without filtering (or handle as needed)
                 Console.WriteLine($"Error calling legacy backend: {ex.Message}");
             }
         }
@@ -94,6 +93,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> CreateRoom([FromForm] RoomDto roomDto)
     {
         List<string> imagePaths;
@@ -128,6 +128,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> UpdateRoom(int id, [FromForm] RoomDto roomDto)
     {
         var existingRoom = await _context.Rooms.FindAsync(id);
@@ -194,6 +195,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteRoom(int id)
     {
         var room = await _context.Rooms.FindAsync(id);

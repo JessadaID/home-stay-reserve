@@ -2,14 +2,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using room_service.data;
 using room_service.models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+// using System.Collections.Generic;
+// using System.Linq;
+// using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace room_service.Controllers;
 
 [ApiController]
 [Route("api/config")]
+[Authorize(Roles = "admin")]
 public class SystemConfigsController : ControllerBase
 {
     private readonly AppDbContext _context;
