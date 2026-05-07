@@ -62,18 +62,13 @@
 
 ---
 
-## การเชื่อมต่อระบบ Microservices (JWT Authentication)
+## รายละเอียดของแต่ละ Service
 
-ได้มีการอัปเดตระบบการยืนยันตัวตนระหว่าง Microservices เพื่อให้ทำงานร่วมกันได้อย่างสมบูรณ์:
+ระบบถูกแยกออกเป็น Microservices เพื่อการขยายตัวและจัดการที่ง่ายขึ้น:
 
-*   **Auth Service (Node.js)**:
-    - เพิ่มการตั้งค่า `JWT_ISSUER` และ `JWT_AUDIENCE` เพื่อให้ Token เป็นไปตามมาตรฐาน
-    - ปรับปรุงระบบการ Sign Token ให้รวม Claim ข้อมูล Issuer และ Audience
-*   **Room Service (.NET 8)**:
-    - ติดตั้งและตั้งค่า `Microsoft.AspNetCore.Authentication.JwtBearer`
-    - กำหนดค่า `JwtSettings` ใน `appsettings.json` ให้ตรงกับระบบ Auth
-    - ตั้งค่าการแมพ Claim เพื่อให้อ่านค่า `username` และ `role` จาก Token ของ Node.js ได้โดยตรง
-    - เปิดใช้งานการตรวจสอบสิทธิ์ผ่าน Attribute `[Authorize(Roles = "admin")]` ใน Controller ต่างๆ
+*   **Auth Service (Node.js)**: จัดการระบบสมาชิก, การสมัครสมาชิก (Register) และการเข้าสู่ระบบ (Login)
+*   **Room Service (.NET 8)**: จัดการข้อมูลห้องพัก, ระบบค้นหาห้องว่าง และการตั้งค่าระบบต่างๆ ของห้องพัก
+*   **Booking Service (Node.js)**: จัดการระบบการจองห้องพักและการเช็คอิน/เช็คเอาท์ (อยู่ในระหว่างการพัฒนา)
 
 ---
 
