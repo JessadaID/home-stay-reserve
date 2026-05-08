@@ -16,27 +16,23 @@ exports.mockPayment = async (req, res) => {
     }
 
     try {
-        // 1. Check if booking exists and belongs to the customer
-        const bookingCheck = await prisma.booking.findFirst({
+        const booking = await prisma.booking.findFirst({
             where: {
                 id: parseInt(booking_id),
                 customer_id: parseInt(customer_id),
             },
         });
-        if (bookingCheck.rows.length === 0) {
+
+        if (!booking) {
             return res.status(404).json({ message: 'Booking not found or not authorized' });
         }
 
-        const booking = bookingCheck.rows[0];
-
-        // 2. Logic: if 'pay_now' -> 'paid', if 'deposit' -> 'deposit_paid'
         let newStatus = 'paid';
         if (booking.payment_type === 'deposit') {
             newStatus = 'deposit_paid';
         }
 
-        // 3. Update status in Database
-        const result = await prisma.booking.update({
+        const updatedBooking = await prisma.booking.update({
             where: {
                 id: parseInt(booking_id),
             },
@@ -45,7 +41,7 @@ exports.mockPayment = async (req, res) => {
             },
         });
 
-        res.json({ message: 'Payment successful', booking: result.rows[0] });
+        res.json({ message: 'Payment successful', booking: updatedBooking });
     } catch (error) {
         console.error('Error mocking payment:', error);
         res.status(500).json({ message: 'Server error' });

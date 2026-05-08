@@ -6,6 +6,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const bookingRoutes = require('./routes/bookingRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/payments', paymentRoutes);
 
 const PORT = process.env.PORT || 3003;
 

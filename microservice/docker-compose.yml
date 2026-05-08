@@ -2,11 +2,6 @@ version: '3.8'
 
 services:
   # --- Infrastructure ---
-  redis:
-    image: redis:alpine
-    ports:
-      - "6379:6379"
-
   # Database for Auth
   auth-db:
     image: postgres:15-alpine
@@ -54,13 +49,11 @@ services:
       - "5130:5130"
     environment:
       - ConnectionStrings__DefaultConnection=Host=room-db;Port=5432;Database=room_db;Username=user_room;Password=password_room
-      - REDIS_URL=redis://redis:6379
       - JwtSettings__SecretKey=Mypasswordissupersecretandverystrongtohackmyjwtsecret
       - JwtSettings__Issuer=homestay-auth-service
       - JwtSettings__Audience=homestay-services
     depends_on:
       - room-db
-      - redis
 
   booking-service:
     build: ./booking_service
