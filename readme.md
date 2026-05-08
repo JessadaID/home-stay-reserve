@@ -1,86 +1,153 @@
-# 🌿 Homestay Reservation System
-### ระบบจัดการและจองที่พักระดับพรีเมียม (Full-stack Application)
+# Homestay Reservation System
 
-ระบบเว็บแอปพลิเคชันที่ออกแบบมาเพื่อเปลี่ยนประสบการณ์การจองที่พักโฮมสเตย์ให้เรียบง่าย สวยงาม และทรงพลัง ด้วยดีไซน์ที่ทันสมัยในธีม **Emerald & Nature** พร้อมระบบหลังบ้านที่จัดการข้อมูลได้อย่างเบ็ดเสร็จ
-
----
-
-## โครงสร้างระบบ (Microservices Architecture)
-
-ระบบถูกออกแบบด้วยสถาปัตยกรรม Microservices เพื่อความยืดหยุ่นและรองรับการขยายตัว:
-
-*   **Auth Service**:
-    - **หน้าที่**: จัดการระบบสมาชิก, การสมัครสมาชิก (Register) และการเข้าสู่ระบบ (Login)
-    - **Tech Stack**: Node.js, Express, Prisma ORM, PostgreSQL
-*   **Room Service**:
-    - **หน้าที่**: จัดการข้อมูลห้องพัก, ระบบค้นหาห้องว่าง (Filtering/Search) และการตั้งค่าระบบห้องพัก
-    - **Tech Stack**: .NET 8, Entity Framework Core, PostgreSQL, JWT Authentication
-*   **Booking Service**:
-    - **หน้าที่**: จัดการระบบการจองห้องพัก, การตรวจสอบห้องว่าง และการจัดการสถานะการจอง
-    - **Tech Stack**: Node.js, Express, Prisma ORM, PostgreSQL
+A full-stack web application for managing and booking homestay accommodations. The system provides a seamless experience for guests to search and book rooms, and a comprehensive admin panel for property owners to manage listings, reservations, and operational data.
 
 ---
 
-## ระบบการใช้งาน
+## Overview
 
-สัมผัสความลื่นไหลของระบบที่ถูกออกแบบมาเพื่อผู้ใช้งานโดยเฉพาะ ตั้งแต่การค้นหาไปจนถึงการจอง
-
-### 1. หน้าแรกและการค้นหา 
-ระบบค้นหาอัจฉริยะที่รองรับการเลือกวันที่ (Date Range) และจำนวนผู้เข้าพัก พร้อมการแสดงผลที่ตอบสนองทุกอุปกรณ์
-
-![Homepage Showcase](./image/home.png)
-> *คลิปการใช้งานหน้าแรกและระบบค้นหา*
-<video src="https://github.com/user-attachments/assets/fc5cc73c-9a73-47ab-9fb5-b565384ae7cb" width="100%" controls></video>
+This project was built to simulate a real-world property management platform. It covers the complete reservation lifecycle — from room browsing and availability checking, to booking confirmation and payment status management. The architecture follows a microservices pattern, separating concerns across independent services to improve scalability and maintainability.
 
 ---
 
-### 2. รายการที่พักและรายละเอียด (Room Exploration)
-แสดงรายการที่พักในรูปแบบที่สวยงาม พร้อมระบบกรองสถานะห้องว่างแบบ Real-time และหน้ารายละเอียดที่พักที่รองรับ Markdown
+## System Architecture
 
-| รายการห้องพัก (Room Listing) | รายละเอียดห้องพัก (Room Details) |
-| :---: | :---: |
-| <video src="https://github.com/user-attachments/assets/25df8125-483d-4bd7-a6c9-6866b00d5505" width="100%" controls></video> | <video src="https://github.com/user-attachments/assets/a93868da-bc5a-4019-b391-f34f5105c6d8" width="100%" controls></video> |
+The backend is structured as a set of independent microservices, each responsible for a specific domain. Services communicate via REST APIs and are containerized using Docker.
+
+### Auth Service
+Handles all authentication and authorization logic for both guests and administrators.
+
+- User registration and login (JWT-based authentication)
+- Password hashing with Bcrypt
+- Admin account management
+- Tech Stack: Node.js, Express.js, Prisma ORM, PostgreSQL
+
+### Room Service
+Manages the room inventory, including room details, availability, and search filtering.
+
+- CRUD operations for room listings
+- Real-time availability filtering by date range and guest count
+- Markdown-supported room descriptions
+- Multi-image upload support
+- Soft delete to preserve booking history integrity
+- Tech Stack: .NET 8, Entity Framework Core, PostgreSQL, JWT Authentication
+
+### Booking Service
+Handles the reservation workflow and payment status tracking.
+
+- Booking creation with overlap prevention logic
+- Booking status management (pending, confirmed, cancelled)
+- Payment status tracking
+- Inter-service communication with Auth Service and Room Service
+- Tech Stack: Node.js, Express.js, Prisma ORM, PostgreSQL
 
 ---
 
-### 3. ขั้นตอนการจอง (Booking)
-ขั้นตอนการจองที่เข้าใจง่าย ป้องกันการจองซ้ำซ้อน (Overlap Prevention) และระบบจัดการสถานะการชำระเงิน
+## Key Features
 
-<video src="https://github.com/user-attachments/assets/2b7a9c2c-ab28-4f5c-b6b5-b6a79828bc0d" width="100%" controls></video>
+### Guest-Facing Features
 
----
+- Smart search with date range picker and guest count filter
+- Room listing with real-time availability status
+- Room detail pages with Markdown-rendered descriptions and image gallery
+- Step-by-step booking flow with duplicate booking prevention
+- User account registration and login
 
-## ระบบจัดการหลังบ้าน (Admin)
+### Admin Panel Features
 
-แอดมินสามารถควบคุมทุกอย่างได้ผ่าน Dashboard ที่เรียบง่ายแต่ทรงพลัง
-
-### แดชบอร์ดภาพรวม (Admin Dashboard)
-ติดตามสถานะการจองและข้อมูลสรุปสำคัญได้ทันที
-![Admin Dashboard](./image/adminDashboard.png)
-
-### การจัดการห้องพัก (Room Management)
-ระบบจัดการข้อมูลห้องพักที่ยืดหยุ่น รองรับการอัปโหลดรูปภาพหลายรูป และการแก้ไขข้อมูลแบบ Dynamic
-| จัดการรายการห้องพัก | ระบบแก้ไขข้อมูล (Editor) |
-| :---: | :---: |
-| ![Manage Room](./image/manageroom.png) | ![Edit Room](./image/editroom.png) |
+- Dashboard with booking summary and key metrics
+- Full room management (create, edit, delete listings)
+- Booking management with status updates
+- Dynamic room editor with multi-image support
 
 ---
 
 ## Tech Stack
 
-โปรเจกต์นี้เลือกใช้เทคโนโลยีที่ทันสมัยเพื่อให้ได้ประสิทธิภาพสูงสุด:
-
-*   **Frontend**: React.js + Vite (ลื่นไหลและรวดเร็ว)
-*   **Styling**: Tailwind CSS + Framer Motion (ดีไซน์สวยงามและ Animation ที่นุ่มนวล)
-*   **Backend**: Node.js + Express.js (จัดการ API ได้อย่างมั่นคง)
-*   **Database**: PostgreSQL (จัดการข้อมูลที่มีความสัมพันธ์ได้อย่างแม่นยำ)
-*   **Security**: JWT + Bcrypt (ระบบล็อกอินที่ปลอดภัย)
+| Layer | Technology |
+|---|---|
+| Frontend | React.js, Vite, TypeScript |
+| Styling | Tailwind CSS, Framer Motion |
+| Auth Service | Node.js, Express.js, Prisma ORM |
+| Room Service | .NET 8, Entity Framework Core |
+| Booking Service | Node.js, Express.js, Prisma ORM |
+| Database | PostgreSQL |
+| Security | JWT, Bcrypt |
+| Containerization | Docker, Docker Compose |
 
 ---
 
-## เริ่มต้นใช้งาน
+## Project Structure
 
-1.  **Backend**: `cd back-end && npm install && npm run dev`
-2.  **Frontend**: `cd front-end && npm install && npm run dev`
-*(ดูรายละเอียดการตั้งค่าฐานข้อมูลในโฟลเดอร์ config)*
+```
+homestay-reserve/
+├── front-end/          # React + Vite frontend application
+├── microservice/
+│   ├── auth_service/   # Node.js authentication service
+│   ├── room_service/   # .NET 8 room management service
+│   └── booking_service/# Node.js booking service
+└── docker-compose.yml  # Container orchestration
+```
 
+---
+
+## Screenshots
+
+### Homepage and Search
+![Homepage](./image/home.png)
+
+<video src="https://github.com/user-attachments/assets/fc5cc73c-9a73-47ab-9fb5-b565384ae7cb" width="100%" controls></video>
+
+### Room Listing and Room Detail
+
+| Room Listing | Room Detail |
+| :---: | :---: |
+| <video src="https://github.com/user-attachments/assets/25df8125-483d-4bd7-a6c9-6866b00d5505" width="100%" controls></video> | <video src="https://github.com/user-attachments/assets/a93868da-bc5a-4019-b391-f34f5105c6d8" width="100%" controls></video> |
+
+### Booking Flow
+<video src="https://github.com/user-attachments/assets/2b7a9c2c-ab28-4f5c-b6b5-b6a79828bc0d" width="100%" controls></video>
+
+### Admin Dashboard
+![Admin Dashboard](./image/adminDashboard.png)
+
+### Room Management
+
+| Room List | Room Editor |
+| :---: | :---: |
+| ![Manage Room](./image/manageroom.png) | ![Edit Room](./image/editroom.png) |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- .NET 8 SDK
+- Docker and Docker Compose
+- PostgreSQL
+
+### Running with Docker
+
+```bash
+cd microservice
+docker compose up --build
+```
+
+### Running Locally
+
+```bash
+# Frontend
+cd front-end && npm install && npm run dev
+
+# Auth Service
+cd microservice/auth_service && npm install && npm run dev
+
+# Room Service
+cd microservice/room_service && dotnet run
+
+# Booking Service
+cd microservice/booking_service && npm install && npm run dev
+```
+
+> For environment variable configuration, refer to the `.env` files located within each service directory.

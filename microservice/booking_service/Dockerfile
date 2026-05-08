@@ -5,12 +5,15 @@ RUN apk add --no-cache openssl libc6-compat
 
 WORKDIR /app
 
+# Install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm ci --only=production
 
+# Generate Prisma client
 COPY prisma ./prisma
 RUN npx prisma generate
 
+# Copy source code
 COPY src ./src
 
 # Production image
@@ -25,6 +28,8 @@ COPY --from=builder /app/src ./src
 COPY --from=builder /app/prisma ./prisma
 COPY package*.json ./
 
-EXPOSE 3000
+# Expose booking_service port
+EXPOSE 3003
 
-CMD ["node", "src/server.js"]
+# Run migrations then start server
+CMD ["sh", "-c", "npx prisma migrate deploy && node src/server.js"]

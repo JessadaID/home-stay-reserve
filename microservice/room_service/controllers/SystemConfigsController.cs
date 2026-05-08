@@ -22,6 +22,7 @@ public class SystemConfigsController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetConfig()
     {
         // Get all configs and map to a dictionary like the legacy backend

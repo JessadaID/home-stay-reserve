@@ -7,7 +7,7 @@ services:
     ports:
       - "6379:6379"
 
-  # Database สำหรับ Auth
+  # Database for Auth
   auth-db:
     image: postgres:15-alpine
     environment:
@@ -17,25 +17,23 @@ services:
     ports:
       - "5431:5432"
 
-  # Database สำหรับ Room (ข้อมูลที่พัก)
+  # Database for Room
   room-db:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: user_room
       POSTGRES_PASSWORD: password_room
       POSTGRES_DB: room_db
-    ports:
-      - "5432:5432"
 
-  # # Database สำหรับ Booking (ข้อมูลการจอง)
-  # booking-db:
-  #   image: postgres:15-alpine
-  #   environment:
-  #     POSTGRES_USER: user_booking
-  #     POSTGRES_PASSWORD: password_booking
-  #     POSTGRES_DB: booking_db
-  #   ports:
-  #     - "5433:5432"
+  # Database for Booking (separate DB per microservice pattern)
+  booking-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user_booking
+      POSTGRES_PASSWORD: password_booking
+      POSTGRES_DB: booking_db
+    ports:
+      - "5433:5432"
 
   # --- Services ---
   auth-service:
@@ -43,7 +41,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgres://jessada:1234@auth-db:5431/auth_db
+      - DATABASE_URL=postgres://jessada:1234@auth-db:5432/auth_db
+      - JWT_SECRET=Mypasswordissupersecretandverystrongtohackmyjwtsecret
+      - JWT_ISSUER=homestay-auth-service
+      - JWT_AUDIENCE=homestay-services
     depends_on:
       - auth-db
 
@@ -52,20 +53,30 @@ services:
     ports:
       - "5130:5130"
     environment:
-      - ConnectionStrings__DefaultConnection=postgres://user_room:password_room@room-db:5432/room_db
+      - ConnectionStrings__DefaultConnection=Host=room-db;Port=5432;Database=room_db;Username=user_room;Password=password_room
       - REDIS_URL=redis://redis:6379
+      - JwtSettings__SecretKey=Mypasswordissupersecretandverystrongtohackmyjwtsecret
+      - JwtSettings__Issuer=homestay-auth-service
+      - JwtSettings__Audience=homestay-services
     depends_on:
       - room-db
       - redis
 
-  # booking-service:
-  #   build: ./booking_service
-  #   ports:
-  #     - "3003:3003"
-  #   environment:
-  #     - DATABASE_URL=postgres://user_booking:password_booking@booking-db:5432/booking_db
-  #     - ROOM_SERVICE_URL=http://room-service:3002
-  #     - REDIS_URL=redis://redis:6379
-  #   depends_on:
-  #     - booking-db
-  #     - redis
+  booking-service:
+    build: ./booking_service
+    ports:
+      - "3003:3003"
+    environment:
+      - DATABASE_URL=postgresql://user_booking:password_booking@booking-db:5432/booking_db
+      - ROOM_SERVICE_URL=http://room-service:5130
+      - JWT_SECRET=Mypasswordissupersecretandverystrongtohackmyjwtsecret
+      - JWT_ISSUER=homestay-auth-service
+      - JWT_AUDIENCE=homestay-services
+      - PORT=3003
+    volumes:
+      - ./booking_service:/app
+      - /app/node_modules
+    restart: on-failure
+    depends_on:
+      - booking-db
+      - room-service

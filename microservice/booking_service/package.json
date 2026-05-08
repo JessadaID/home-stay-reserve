@@ -1,0 +1,33 @@
+{
+  "name": "booking_service",
+  "version": "1.0.0",
+  "description": "Booking microservice for homestay reservation system",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "migrate": "npx prisma migrate dev",
+    "migrate:deploy": "npx prisma migrate deploy",
+    "generate": "npx prisma generate",
+    "seed": "node seed.js"
+  },
+  "prisma": {
+    "seed": "node seed.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.9",
+    "prisma": "^5.22.0"
+  },
+  "devDependencies": {
+  }
+}
