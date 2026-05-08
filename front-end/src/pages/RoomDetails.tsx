@@ -5,7 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { eachDayOfInterval, addDays } from 'date-fns';
+import { eachDayOfInterval, addDays, isSameDay } from 'date-fns';
 import api from '../api/apiClient';
 import PaymentModal from '../components/PaymentModal';
 import type { RoomData, Booking, Holiday } from '../types';
@@ -66,11 +66,32 @@ const RoomDetails = () => {
         });
 
         holidays.forEach(holiday => {
-            const [year, month, day] = holiday.holiday_date.split('-');
-            dates.push(new Date(Number(year), Number(month) - 1, Number(day)));
+            // Using new Date() directly on the holiday_date string is more reliable
+            // than manual splitting which fails when time components are present
+            const holidayDate = new Date(holiday.holiday_date);
+            if (!isNaN(holidayDate.getTime())) {
+                dates.push(holidayDate);
+            }
         });
 
         return dates;
+    };
+
+    const renderDayContents = (day: number, date: Date) => {
+        const holiday = holidays.find(h => isSameDay(new Date(h.holiday_date), date));
+        if (holiday && holiday.description) {
+            return (
+                <div className="relative group/holiday w-full h-full flex items-center justify-center">
+                    {day}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#4a6b52] text-white text-[10px] md:text-xs rounded shadow-2xl opacity-0 group-hover/holiday:opacity-100 pointer-events-none transition-all duration-100 z-[9999] whitespace-nowrap border border-[#7bb188]/30">
+                        {holiday.description}
+                        {/* Triangle arrow */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#4a6b52]"></div>
+                    </div>
+                </div>
+            );
+        }
+        return day;
     };
 
     const disabledDates = getDisabledDates();
@@ -279,6 +300,7 @@ const RoomDetails = () => {
                                             endDate={endDate || undefined}
                                             minDate={new Date()}
                                             excludeDates={disabledDates}
+                                            renderDayContents={renderDayContents}
                                             className="w-full pl-12 pr-4 py-4 bg-[#0B1D12] text-stone-200 border border-[#2b3a2e] focus:ring-1 focus:ring-[#4a6b52] focus:border-[#4a6b52] outline-none transition-all font-light"
                                             placeholderText="เลือกวันเช็คอิน"
                                             dateFormat="dd/MM/yyyy"
@@ -302,6 +324,7 @@ const RoomDetails = () => {
                                             endDate={endDate || undefined}
                                             minDate={startDate ? addDays(startDate, 1) : addDays(new Date(), 1)}
                                             excludeDates={disabledDates}
+                                            renderDayContents={renderDayContents}
                                             className="w-full pl-12 pr-4 py-4 bg-[#0B1D12] text-stone-200 border border-[#2b3a2e] focus:ring-1 focus:ring-[#4a6b52] focus:border-[#4a6b52] outline-none transition-all font-light"
                                             placeholderText="เลือกวันเช็คเอาท์"
                                             dateFormat="dd/MM/yyyy"

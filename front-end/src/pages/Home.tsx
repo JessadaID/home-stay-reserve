@@ -1,15 +1,56 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiCalendar, FiUsers, FiSearch, FiTrash2 } from 'react-icons/fi';
 import Room from '../components/Room';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
+import api from '../api/apiClient';
+import { isSameDay } from 'date-fns';
+import type { Holiday } from '../types';
 
 const Home = () => {
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [startDate, endDate] = dateRange;
     const [capacity, setcapacity] = useState(0);
     const navigate = useNavigate();
+    const [holidays, setHolidays] = useState<Holiday[]>([]);
+    const ROOM_SERVICE_URL = import.meta.env.VITE_ROOM_SERVICE_URL || "";
+
+    useEffect(() => {
+        const fetchHolidays = async () => {
+            try {
+                const res = await api.get(`${ROOM_SERVICE_URL}/api/holidays`);
+                setHolidays(res.data);
+            } catch (error) {
+                console.error("Error fetching holidays:", error);
+            }
+        };
+        fetchHolidays();
+    }, [ROOM_SERVICE_URL]);
+
+    const getDisabledDates = () => {
+        return holidays.map(h => {
+            const date = new Date(h.holiday_date);
+            return isNaN(date.getTime()) ? null : date;
+        }).filter((d): d is Date => d !== null);
+    };
+
+    const renderDayContents = (day: number, date: Date) => {
+        const holiday = holidays.find(h => isSameDay(new Date(h.holiday_date), date));
+        if (holiday && holiday.description) {
+            return (
+                <div className="relative group/holiday w-full h-full flex items-center justify-center">
+                    {day}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#4a6b52] text-white text-[10px] md:text-xs rounded shadow-2xl opacity-0 group-hover/holiday:opacity-100 pointer-events-none transition-all duration-100 z-[9999] whitespace-nowrap border border-[#7bb188]/30">
+                        {holiday.description}
+                        {/* Triangle arrow */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#4a6b52]"></div>
+                    </div>
+                </div>
+            );
+        }
+        return day;
+    };
 
     const toRoomPage = () => {
         const params = new URLSearchParams();
@@ -73,6 +114,8 @@ const Home = () => {
                                 startDate={startDate}
                                 endDate={endDate}
                                 minDate={new Date()}
+                                excludeDates={getDisabledDates()}
+                                renderDayContents={renderDayContents}
                                 onChange={(update: [Date | null, Date | null]) => {
                                     setDateRange(update);
                                 }}
