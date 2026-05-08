@@ -1,12 +1,11 @@
-// prisma/schema.prisma
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model Booking {
@@ -20,4 +19,6 @@ model Booking {
   payment_type   String?  @db.VarChar(20)
   payment_status String?  @default("pending") @db.VarChar(20)
   created_at     DateTime @default(now()) @db.Timestamp(6)
+
+  @@map("booking")
 }
