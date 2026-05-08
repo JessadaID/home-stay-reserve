@@ -67,7 +67,7 @@ exports.loginAdmin = async (req, res) => {
         });
 
         const payload = { userId: admin.id, id: admin.id, username: admin.username, email: admin.email, role: 'admin' };
-        const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret', { 
+        const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret', {
             expiresIn: '1d',
             issuer: process.env.JWT_ISSUER,
             audience: process.env.JWT_AUDIENCE
@@ -76,7 +76,7 @@ exports.loginAdmin = async (req, res) => {
         res.json({ token, user: { id: admin.id, username: admin.username, email: admin.email, role: 'admin' } });
     } catch (error) {
         console.error('Error in loginAdmin:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -143,7 +143,7 @@ exports.loginCustomer = async (req, res) => {
         });
 
         const payload = { userId: customer.id, id: customer.id, username: customer.name, email: customer.email, role: 'customer' };
-        const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret', { 
+        const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret', {
             expiresIn: '1d',
             issuer: process.env.JWT_ISSUER,
             audience: process.env.JWT_AUDIENCE

@@ -120,7 +120,7 @@ public class RoomsController : ControllerBase
                 ? new List<string>() 
                 : JsonSerializer.Deserialize<List<string>>(roomDto.Amenities) ?? new List<string>(),
             Payment_option = roomDto.Payment_option ?? "",
-            Deposit_percentage = roomDto.Deposit_percentage,
+            Deposit_percentage = roomDto.Deposit_percentage ?? 0,
             Images = imagePaths
         };
 
@@ -173,7 +173,7 @@ public class RoomsController : ControllerBase
             ? existingRoom.Amenities 
             : JsonSerializer.Deserialize<List<string>>(roomDto.Amenities) ?? existingRoom.Amenities;
         existingRoom.Payment_option = roomDto.Payment_option ?? existingRoom.Payment_option;
-        existingRoom.Deposit_percentage = roomDto.Deposit_percentage != 0 ? roomDto.Deposit_percentage : existingRoom.Deposit_percentage;
+        existingRoom.Deposit_percentage = roomDto.Deposit_percentage ?? existingRoom.Deposit_percentage;
         existingRoom.Images = finalImages;
 
         _context.Entry(existingRoom).State = EntityState.Modified;

@@ -35,7 +35,7 @@ const RoomDetails = () => {
             try {
                 const [roomRes, bookingsRes, configRes, holidaysRes] = await Promise.all([
                     api.get(`${ROOM_SERVICE_URL}/api/rooms/${id}`),
-                    api.get(`${BOOKING_SERVICE_URL}/api/bookings/rooms/${id}`),
+                    api.get(`${BOOKING_SERVICE_URL}/api/bookings`),
                     api.get(`${ROOM_SERVICE_URL}/api/config`),
                     api.get(`${ROOM_SERVICE_URL}/api/holidays`)
                 ]);

@@ -12,7 +12,7 @@ public class RoomDto
     public int Size { get; set; }
     public string? Amenities { get; set; }
     public string? Payment_option { get; set; }
-    public int Deposit_percentage { get; set; }
+    public int? Deposit_percentage { get; set; }
     
     // For handling multiple image file uploads
     public List<IFormFile>? Images { get; set; }
